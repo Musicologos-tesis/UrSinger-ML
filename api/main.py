@@ -1,0 +1,684 @@
+"""
+API REST del Modelo de Detección de Carencias Vocales
+Servicio FastAPI para ser consumido por el backend NestJS
+"""
+
+from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field, validator
+from typing import List, Dict, Optional
+import joblib
+import numpy as np
+import pandas as pd
+from pathlib import Path
+import logging
+from datetime import datetime
+
+# Configuración de logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Inicializar FastAPI con documentación Swagger completa
+app = FastAPI(
+    title="🎤 UrSinger ML API",
+    openapi_tags=[
+        {
+            "name": "Predicción",
+            "description": "Endpoints para detectar carencias vocales"
+        },
+        {
+            "name": "Salud",
+            "description": "Endpoints para verificar el estado del servicio"
+        }
+    ]
+)
+
+# CORS - Configurar para que SOLO tu backend pueda acceder
+# En producción, reemplaza "*" con la URL de tu backend NestJS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:4200"],  # URLs de tu backend/frontend
+    allow_credentials=True,
+    allow_methods=["POST"],
+    allow_headers=["*"],
+)
+
+# Rutas de los modelos
+BASE_DIR = Path(__file__).parent.parent
+MODELS_DIR = BASE_DIR / "models" / "saved"
+SCALERS_DIR = BASE_DIR / "models" / "scalers"
+
+# Cargar modelos y scalers al iniciar la API
+models = {}
+scaler = None
+gender_encoder = None
+
+@app.on_event("startup")
+async def load_models():
+    """Carga los modelos y scalers al iniciar la API"""
+    global models, scaler, gender_encoder
+
+    try:
+        logger.info("Cargando modelos y scalers...")
+
+        # Cargar los 5 modelos XGBoost
+        for i in range(1, 6):
+            model_path = MODELS_DIR / f"xgb_weak_G{i}.pkl"
+            models[f"weak_G{i}"] = joblib.load(model_path)
+            logger.info(f"✓ Modelo weak_G{i} cargado")
+
+        # Cargar scalers
+        scaler = joblib.load(SCALERS_DIR / "feature_scaler.pkl")
+        gender_encoder = joblib.load(SCALERS_DIR / "gender_encoder.pkl")
+
+        logger.info("✓ Todos los modelos y scalers cargados exitosamente")
+
+    except Exception as e:
+        logger.error(f"Error cargando modelos: {e}")
+        raise
+
+
+# ============================================================================
+# MODELOS DE DATOS (Pydantic)
+# ============================================================================
+
+class VocalMetrics(BaseModel):
+    """
+    Métricas vocales extraídas del audio del cantante.
+
+    Estas métricas son calculadas por el frontend usando Web Audio API,
+    librosa.js o procesamiento de audio similar.
+    """
+    gender: str = Field(
+        ...,
+        description="Género del cantante",
+        example="F",
+        pattern="^(F|M)$"
+    )
+    meanRmsDb: float = Field(
+        ...,
+        description="Nivel promedio de volumen durante la emisión (dBFS). Valores típicos: -35 a -15",
+        example=-25.5,
+        ge=-60,
+        le=0
+    )
+    rmsConsistency: float = Field(
+        ...,
+        description="Estabilidad del volumen (desviación estándar en dBFS). Menor = más estable. Valores típicos: 2-8",
+        example=3.2,
+        ge=0
+    )
+    dynamicRangeDb: float = Field(
+        ...,
+        description="Diferencia entre volumen máximo y mínimo (dBFS). Valores típicos: 15-80",
+        example=68.5,
+        ge=0,
+        le=120
+    )
+    durationSec: float = Field(
+        ...,
+        description="Duración efectiva de notas sostenidas (segundos). Valores típicos: 1.5-4",
+        example=2.8,
+        ge=0.1,
+        le=10
+    )
+    attackLatencyMs: float = Field(
+        ...,
+        description="Tiempo entre inicio de sonido y estabilización del tono (milisegundos). Valores típicos: 50-150",
+        example=85.3,
+        ge=0,
+        le=500
+    )
+    precisionCents: float = Field(
+        ...,
+        description="Diferencia promedio entre pitch emitido y objetivo (cents). Menor = mejor. Valores típicos: 5-30",
+        example=12.4,
+        ge=0,
+        le=100
+    )
+    stabilityCents: float = Field(
+        ...,
+        description="Desviación tonal durante notas sostenidas (cents). Menor = más estable. Valores típicos: 3-20",
+        example=8.9,
+        ge=0,
+        le=50
+    )
+    rangeMinMidi: float = Field(
+        ...,
+        description="Nota más grave del rango vocal (MIDI). Ejemplo: C3=48, C4=60",
+        example=58.0,
+        ge=20,
+        le=108
+    )
+    rangeMaxMidi: float = Field(
+        ...,
+        description="Nota más aguda del rango vocal (MIDI). Ejemplo: C4=60, C5=72",
+        example=80.0,
+        ge=20,
+        le=108
+    )
+    rangeSpanSemitones: float = Field(
+        ...,
+        description="Extensión vocal en semitonos. Típico: 12-36 semitonos (1-3 octavas)",
+        example=22.0,
+        ge=0,
+        le=60
+    )
+
+    @validator('gender')
+    def validate_gender(cls, v):
+        if v not in ['F', 'M']:
+            raise ValueError('El género debe ser "F" (femenino) o "M" (masculino)')
+        return v
+
+    @validator('rangeMaxMidi')
+    def validate_range(cls, v, values):
+        if 'rangeMinMidi' in values and v <= values['rangeMinMidi']:
+            raise ValueError('rangeMaxMidi debe ser mayor que rangeMinMidi')
+        return v
+
+    class Config:
+        json_schema_extra = {
+            "examples": [
+                {
+                    "summary": "Cantante profesional (sin carencias)",
+                    "description": "Ejemplo de métricas de un cantante con excelente técnica",
+                    "value": {
+                        "gender": "F",
+                        "meanRmsDb": -25.5,
+                        "rmsConsistency": 3.2,
+                        "dynamicRangeDb": 70.0,
+                        "durationSec": 2.8,
+                        "attackLatencyMs": 75.0,
+                        "precisionCents": 8.5,
+                        "stabilityCents": 6.2,
+                        "rangeMinMidi": 58.0,
+                        "rangeMaxMidi": 80.0,
+                        "rangeSpanSemitones": 22.0
+                    }
+                },
+                {
+                    "summary": "Cantante con carencias evidentes",
+                    "description": "Ejemplo de métricas con múltiples problemas técnicos",
+                    "value": {
+                        "gender": "M",
+                        "meanRmsDb": -45.0,
+                        "rmsConsistency": 15.0,
+                        "dynamicRangeDb": 25.0,
+                        "durationSec": 1.2,
+                        "attackLatencyMs": 150.0,
+                        "precisionCents": 35.0,
+                        "stabilityCents": 25.0,
+                        "rangeMinMidi": 55.0,
+                        "rangeMaxMidi": 65.0,
+                        "rangeSpanSemitones": 10.0
+                    }
+                },
+                {
+                    "summary": "Cantante intermedio",
+                    "description": "Ejemplo de métricas de un cantante en desarrollo",
+                    "value": {
+                        "gender": "F",
+                        "meanRmsDb": -30.0,
+                        "rmsConsistency": 6.5,
+                        "dynamicRangeDb": 50.0,
+                        "durationSec": 2.2,
+                        "attackLatencyMs": 95.0,
+                        "precisionCents": 18.0,
+                        "stabilityCents": 12.0,
+                        "rangeMinMidi": 60.0,
+                        "rangeMaxMidi": 78.0,
+                        "rangeSpanSemitones": 18.0
+                    }
+                }
+            ]
+        }
+
+
+class WeaknessDetection(BaseModel):
+    """Resultado binario de detección de carencias por grupo"""
+    weak_G1: int = Field(
+        ...,
+        description="1 = Carencia en Soporte Respiratorio y Control de Aire, 0 = Sin carencia",
+        example=0,
+        ge=0,
+        le=1
+    )
+    weak_G2: int = Field(
+        ...,
+        description="1 = Carencia en Afinación y Oído Tonal, 0 = Sin carencia",
+        example=0,
+        ge=0,
+        le=1
+    )
+    weak_G3: int = Field(
+        ...,
+        description="1 = Carencia en Estabilidad y Control, 0 = Sin carencia",
+        example=0,
+        ge=0,
+        le=1
+    )
+    weak_G4: int = Field(
+        ...,
+        description="1 = Carencia en Potencia y Control Dinámico, 0 = Sin carencia",
+        example=0,
+        ge=0,
+        le=1
+    )
+    weak_G5: int = Field(
+        ...,
+        description="1 = Carencia en Rango y Flexibilidad Vocal, 0 = Sin carencia",
+        example=0,
+        ge=0,
+        le=1
+    )
+
+
+class PredictionResponse(BaseModel):
+    """Respuesta completa de la predicción con carencias detectadas y niveles de confianza"""
+    success: bool = Field(
+        ...,
+        description="Indica si la predicción fue exitosa",
+        example=True
+    )
+    weaknesses: WeaknessDetection = Field(
+        ...,
+        description="Detección binaria de carencias por grupo (0=sin carencia, 1=con carencia)"
+    )
+    weaknesses_detected: List[str] = Field(
+        ...,
+        description="Lista de nombres de grupos con carencias detectadas",
+        example=[]
+    )
+    total_weaknesses: int = Field(
+        ...,
+        description="Cantidad total de grupos con carencias detectadas (0-5)",
+        example=0,
+        ge=0,
+        le=5
+    )
+    confidence_scores: Dict[str, float] = Field(
+        ...,
+        description="Probabilidad de carencia para cada grupo (0.0-1.0). Valores >0.5 indican carencia probable",
+        example={
+            "weak_G1": 0.0234,
+            "weak_G2": 0.0156,
+            "weak_G3": 0.0089,
+            "weak_G4": 0.0312,
+            "weak_G5": 0.0045
+        }
+    )
+
+    class Config:
+        json_schema_extra = {
+            "examples": [
+                {
+                    "summary": "Sin carencias detectadas",
+                    "description": "Respuesta típica para un cantante con buena técnica",
+                    "value": {
+                        "success": True,
+                        "weaknesses": {
+                            "weak_G1": 0,
+                            "weak_G2": 0,
+                            "weak_G3": 0,
+                            "weak_G4": 0,
+                            "weak_G5": 0
+                        },
+                        "weaknesses_detected": [],
+                        "total_weaknesses": 0,
+                        "confidence_scores": {
+                            "weak_G1": 0.0234,
+                            "weak_G2": 0.0156,
+                            "weak_G3": 0.0089,
+                            "weak_G4": 0.0312,
+                            "weak_G5": 0.0045
+                        }
+                    }
+                },
+                {
+                    "summary": "Múltiples carencias detectadas",
+                    "description": "Respuesta cuando se detectan varios grupos con problemas",
+                    "value": {
+                        "success": True,
+                        "weaknesses": {
+                            "weak_G1": 1,
+                            "weak_G2": 0,
+                            "weak_G3": 0,
+                            "weak_G4": 1,
+                            "weak_G5": 1
+                        },
+                        "weaknesses_detected": ["weak_G1", "weak_G4", "weak_G5"],
+                        "total_weaknesses": 3,
+                        "confidence_scores": {
+                            "weak_G1": 0.8524,
+                            "weak_G2": 0.1241,
+                            "weak_G3": 0.2156,
+                            "weak_G4": 0.7891,
+                            "weak_G5": 0.9234
+                        }
+                    }
+                }
+            ]
+        }
+
+
+class HealthResponse(BaseModel):
+    """Respuesta del endpoint de salud"""
+    status: str = Field(..., description="Estado general del servicio", example="healthy")
+    models_loaded: bool = Field(..., description="Indica si los 5 modelos XGBoost están cargados", example=True)
+    scaler_loaded: bool = Field(..., description="Indica si el normalizador está cargado", example=True)
+    encoder_loaded: bool = Field(..., description="Indica si el codificador de género está cargado", example=True)
+    timestamp: str = Field(..., description="Timestamp de la verificación", example="2025-11-16T10:30:00")
+
+
+# ============================================================================
+# ENDPOINTS
+# ============================================================================
+
+
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    tags=["Salud"],
+    summary="Verificar salud del servicio",
+    description="Endpoint de health check para monitoreo. Verifica que todos los componentes estén cargados correctamente.",
+    responses={
+        200: {
+            "description": "Servicio funcionando correctamente",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "healthy",
+                        "models_loaded": True,
+                        "scaler_loaded": True,
+                        "encoder_loaded": True,
+                        "timestamp": "2025-11-16T10:30:00"
+                    }
+                }
+            }
+        },
+        503: {
+            "description": "Servicio no disponible - Componentes faltantes"
+        }
+    }
+)
+async def health_check():
+    """
+    ## Health Check
+
+    Verifica que el servicio esté funcionando correctamente:
+    - ✅ Modelos XGBoost cargados (5 modelos)
+    - ✅ StandardScaler cargado
+    - ✅ Gender encoder cargado
+
+    Este endpoint es útil para:
+    - Monitoreo en producción
+    - Load balancers
+    - Verificación antes de hacer requests
+    """
+    is_healthy = (
+        len(models) == 5 and
+        scaler is not None and
+        gender_encoder is not None
+    )
+
+    return HealthResponse(
+        status="healthy" if is_healthy else "unhealthy",
+        models_loaded=len(models) == 5,
+        scaler_loaded=scaler is not None,
+        encoder_loaded=gender_encoder is not None,
+        timestamp=datetime.now().isoformat()
+    )
+
+
+@app.post(
+    "/predict",
+    response_model=PredictionResponse,
+    tags=["Predicción"],
+    summary="Detectar carencias vocales",
+    responses={
+        200: {
+            "description": "Predicción exitosa",
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "sin_carencias": {
+                            "summary": "Cantante profesional",
+                            "value": {
+                                "success": True,
+                                "weaknesses": {
+                                    "weak_G1": 0,
+                                    "weak_G2": 0,
+                                    "weak_G3": 0,
+                                    "weak_G4": 0,
+                                    "weak_G5": 0
+                                },
+                                "weaknesses_detected": [],
+                                "total_weaknesses": 0,
+                                "confidence_scores": {
+                                    "weak_G1": 0.0234,
+                                    "weak_G2": 0.0156,
+                                    "weak_G3": 0.0089,
+                                    "weak_G4": 0.0312,
+                                    "weak_G5": 0.0045
+                                }
+                            }
+                        },
+                        "con_carencias": {
+                            "summary": "Múltiples carencias",
+                            "value": {
+                                "success": True,
+                                "weaknesses": {
+                                    "weak_G1": 1,
+                                    "weak_G2": 0,
+                                    "weak_G3": 0,
+                                    "weak_G4": 1,
+                                    "weak_G5": 1
+                                },
+                                "weaknesses_detected": ["weak_G1", "weak_G4", "weak_G5"],
+                                "total_weaknesses": 3,
+                                "confidence_scores": {
+                                    "weak_G1": 0.8524,
+                                    "weak_G2": 0.1241,
+                                    "weak_G3": 0.2156,
+                                    "weak_G4": 0.7891,
+                                    "weak_G5": 0.9234
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            "description": "Datos de entrada inválidos",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "El género debe ser 'F' o 'M'"
+                    }
+                }
+            }
+        },
+        500: {
+            "description": "Error interno del servidor",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Error al procesar la predicción"
+                    }
+                }
+            }
+        }
+    },
+    response_model_exclude_none=True
+)
+async def predict_weaknesses(metrics: VocalMetrics):
+    """
+    Detecta carencias vocales basándose en las métricas proporcionadas.
+
+    Este endpoint recibe las 11 métricas vocales calculadas por el frontend,
+    las normaliza, y predice qué grupos de habilidad presentan carencias.
+    """
+    try:
+        logger.info(f"📊 Predicción solicitada para género: {metrics.gender}")
+
+        # 1. Validar género (ya validado por Pydantic, pero por seguridad)
+        if metrics.gender not in ['F', 'M']:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El género debe ser 'F' o 'M'"
+            )
+
+        # 2. Preparar datos de entrada
+        # Codificar género
+        gender_encoded = gender_encoder.transform([metrics.gender])[0]
+
+        # Crear array con todas las features en el orden correcto
+        features = np.array([[
+            gender_encoded,
+            metrics.meanRmsDb,
+            metrics.rmsConsistency,
+            metrics.dynamicRangeDb,
+            metrics.durationSec,
+            metrics.attackLatencyMs,
+            metrics.precisionCents,
+            metrics.stabilityCents,
+            metrics.rangeMinMidi,
+            metrics.rangeMaxMidi,
+            metrics.rangeSpanSemitones
+        ]])
+
+        # 3. Normalizar features
+        features_scaled = scaler.transform(features)
+
+        # 4. Predecir con cada modelo
+        predictions = {}
+        confidence_scores = {}
+        weaknesses_list = []
+
+        for group_name, model in models.items():
+            # Predicción binaria
+            prediction = int(model.predict(features_scaled)[0])
+            predictions[group_name] = prediction
+
+            # Probabilidad (confidence)
+            proba = float(model.predict_proba(features_scaled)[0][1])
+            confidence_scores[group_name] = round(proba, 4)
+
+            # Si hay carencia, agregar a la lista
+            if prediction == 1:
+                weaknesses_list.append(group_name)
+
+        logger.info(f"✅ Predicción completada: {sum(predictions.values())} carencias detectadas")
+
+        # 5. Construir respuesta
+        return PredictionResponse(
+            success=True,
+            weaknesses=WeaknessDetection(**predictions),
+            weaknesses_detected=weaknesses_list,
+            total_weaknesses=sum(predictions.values()),
+            confidence_scores=confidence_scores
+        )
+
+    except HTTPException:
+        raise
+    except ValueError as e:
+        logger.error(f"❌ Error de validación: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(f"❌ Error en predicción: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al procesar la predicción: {str(e)}"
+        )
+
+
+@app.post(
+    "/batch-predict",
+    tags=["Predicción"],
+    summary="Detectar carencias en lote",
+    responses={
+        200: {
+            "description": "Predicciones exitosas",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "success": True,
+                        "total_predictions": 5,
+                        "results": [
+                            {
+                                "success": True,
+                                "weaknesses": {
+                                    "weak_G1": 0,
+                                    "weak_G2": 0,
+                                    "weak_G3": 0,
+                                    "weak_G4": 0,
+                                    "weak_G5": 0
+                                },
+                                "weaknesses_detected": [],
+                                "total_weaknesses": 0,
+                                "confidence_scores": {
+                                    "weak_G1": 0.0234,
+                                    "weak_G2": 0.0156,
+                                    "weak_G3": 0.0089,
+                                    "weak_G4": 0.0312,
+                                    "weak_G5": 0.0045
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        500: {
+            "description": "Error en el procesamiento batch"
+        }
+    }
+)
+async def batch_predict(metrics_list: List[VocalMetrics]):
+    """
+    Predice carencias para múltiples conjuntos de métricas.
+    Útil si quieres evaluar varias vocales a la vez.
+    """
+    try:
+        logger.info(f"📊 Batch prediction solicitada: {len(metrics_list)} muestras")
+        results = []
+        for i, metrics in enumerate(metrics_list, 1):
+            logger.info(f"  Procesando muestra {i}/{len(metrics_list)}")
+            result = await predict_weaknesses(metrics)
+            results.append(result)
+
+        logger.info(f"✅ Batch prediction completada: {len(results)} resultados")
+        return {
+            "success": True,
+            "total_predictions": len(results),
+            "results": results
+        }
+
+    except Exception as e:
+        logger.error(f"❌ Error en batch prediction: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al procesar predicciones batch: {str(e)}"
+        )
+
+
+# ============================================================================
+# EJECUCIÓN
+# ============================================================================
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,  # Solo en desarrollo
+        log_level="info"
+    )
+

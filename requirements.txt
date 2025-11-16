@@ -1,0 +1,10 @@
+numpy
+pandas
+librosa
+crepe
+tensorflow
+scikit-learn
+xgboost
+joblib
+matplotlib
+tqdm
