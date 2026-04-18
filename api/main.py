@@ -54,6 +54,15 @@ models = {}
 scaler = None
 gender_encoder = None
 
+# Umbrales por grupo para la respuesta avanzada de /predict
+GROUP_THRESHOLDS = {
+    "weak_G1": 0.40,
+    "weak_G2": 0.45,
+    "weak_G3": 0.42,
+    "weak_G4": 0.50,
+    "weak_G5": 0.47,
+}
+
 @app.on_event("startup")
 async def load_models():
     """Carga los modelos y scalers al iniciar la API"""
@@ -182,55 +191,43 @@ class VocalMetrics(BaseModel):
         json_schema_extra = {
             "examples": [
                 {
-                    "summary": "Cantante profesional (sin carencias)",
-                    "description": "Ejemplo de métricas de un cantante con excelente técnica",
-                    "value": {
-                        "gender": "F",
-                        "meanRmsDb": -25.5,
-                        "rmsConsistency": 3.2,
-                        "dynamicRangeDb": 70.0,
-                        "durationSec": 2.8,
-                        "attackLatencyMs": 75.0,
-                        "precisionCents": 8.5,
-                        "stabilityCents": 6.2,
-                        "rangeMinMidi": 58.0,
-                        "rangeMaxMidi": 80.0,
-                        "rangeSpanSemitones": 22.0
-                    }
+                    "gender": "F",
+                    "meanRmsDb": -25.5,
+                    "rmsConsistency": 3.2,
+                    "dynamicRangeDb": 70.0,
+                    "durationSec": 2.8,
+                    "attackLatencyMs": 75.0,
+                    "precisionCents": 8.5,
+                    "stabilityCents": 6.2,
+                    "rangeMinMidi": 58.0,
+                    "rangeMaxMidi": 80.0,
+                    "rangeSpanSemitones": 22.0
                 },
                 {
-                    "summary": "Cantante con carencias evidentes",
-                    "description": "Ejemplo de métricas con múltiples problemas técnicos",
-                    "value": {
-                        "gender": "M",
-                        "meanRmsDb": -45.0,
-                        "rmsConsistency": 15.0,
-                        "dynamicRangeDb": 25.0,
-                        "durationSec": 1.2,
-                        "attackLatencyMs": 150.0,
-                        "precisionCents": 35.0,
-                        "stabilityCents": 25.0,
-                        "rangeMinMidi": 55.0,
-                        "rangeMaxMidi": 65.0,
-                        "rangeSpanSemitones": 10.0
-                    }
+                    "gender": "M",
+                    "meanRmsDb": -45.0,
+                    "rmsConsistency": 15.0,
+                    "dynamicRangeDb": 25.0,
+                    "durationSec": 1.2,
+                    "attackLatencyMs": 150.0,
+                    "precisionCents": 35.0,
+                    "stabilityCents": 25.0,
+                    "rangeMinMidi": 55.0,
+                    "rangeMaxMidi": 65.0,
+                    "rangeSpanSemitones": 10.0
                 },
                 {
-                    "summary": "Cantante intermedio",
-                    "description": "Ejemplo de métricas de un cantante en desarrollo",
-                    "value": {
-                        "gender": "F",
-                        "meanRmsDb": -30.0,
-                        "rmsConsistency": 6.5,
-                        "dynamicRangeDb": 50.0,
-                        "durationSec": 2.2,
-                        "attackLatencyMs": 95.0,
-                        "precisionCents": 18.0,
-                        "stabilityCents": 12.0,
-                        "rangeMinMidi": 60.0,
-                        "rangeMaxMidi": 78.0,
-                        "rangeSpanSemitones": 18.0
-                    }
+                    "gender": "F",
+                    "meanRmsDb": -30.0,
+                    "rmsConsistency": 6.5,
+                    "dynamicRangeDb": 50.0,
+                    "durationSec": 2.2,
+                    "attackLatencyMs": 95.0,
+                    "precisionCents": 18.0,
+                    "stabilityCents": 12.0,
+                    "rangeMinMidi": 60.0,
+                    "rangeMaxMidi": 78.0,
+                    "rangeSpanSemitones": 18.0
                 }
             ]
         }
@@ -277,15 +274,6 @@ class WeaknessDetection(BaseModel):
 
 class PredictionResponse(BaseModel):
     """Respuesta completa de la predicción con carencias detectadas y niveles de confianza"""
-    success: bool = Field(
-        ...,
-        description="Indica si la predicción fue exitosa",
-        example=True
-    )
-    weaknesses: WeaknessDetection = Field(
-        ...,
-        description="Detección binaria de carencias por grupo (0=sin carencia, 1=con carencia)"
-    )
     weaknesses_detected: List[str] = Field(
         ...,
         description="Lista de nombres de grupos con carencias detectadas",
@@ -317,14 +305,6 @@ class PredictionResponse(BaseModel):
                     "summary": "Sin carencias detectadas",
                     "description": "Respuesta típica para un cantante con buena técnica",
                     "value": {
-                        "success": True,
-                        "weaknesses": {
-                            "weak_G1": 0,
-                            "weak_G2": 0,
-                            "weak_G3": 0,
-                            "weak_G4": 0,
-                            "weak_G5": 0
-                        },
                         "weaknesses_detected": [],
                         "total_weaknesses": 0,
                         "confidence_scores": {
@@ -340,14 +320,6 @@ class PredictionResponse(BaseModel):
                     "summary": "Múltiples carencias detectadas",
                     "description": "Respuesta cuando se detectan varios grupos con problemas",
                     "value": {
-                        "success": True,
-                        "weaknesses": {
-                            "weak_G1": 1,
-                            "weak_G2": 0,
-                            "weak_G3": 0,
-                            "weak_G4": 1,
-                            "weak_G5": 1
-                        },
                         "weaknesses_detected": ["weak_G1", "weak_G4", "weak_G5"],
                         "total_weaknesses": 3,
                         "confidence_scores": {
@@ -370,6 +342,83 @@ class HealthResponse(BaseModel):
     scaler_loaded: bool = Field(..., description="Indica si el normalizador está cargado", example=True)
     encoder_loaded: bool = Field(..., description="Indica si el codificador de género está cargado", example=True)
     timestamp: str = Field(..., description="Timestamp de la verificación", example="2025-11-16T10:30:00")
+
+
+class GroupMetric(BaseModel):
+    """Métricas de evaluación por grupo para /predict"""
+    score: float = Field(..., description="Probabilidad de carencia (0.0-1.0)", example=0.68)
+    threshold: float = Field(..., description="Umbral de decisión para considerar carencia", example=0.45)
+    is_weak: bool = Field(..., description="True si la probabilidad supera el umbral", example=True)
+    missing_to_clear_pct: float = Field(
+        ...,
+        description="Porcentaje que falta para salir de zona de carencia (0-100). Si no hay carencia, es 0.",
+        example=41.82
+    )
+    achievement_pct: float = Field(
+        ...,
+        description="Porcentaje de logro del grupo (100 cuando no hay carencia).",
+        example=58.18
+    )
+
+
+class PredictionV2Response(BaseModel):
+    """Respuesta extendida con porcentajes por grupo"""
+    weaknesses_detected: List[str] = Field(..., description="Grupos detectados con carencia")
+    total_weaknesses: int = Field(..., description="Total de grupos con carencia", ge=0, le=5)
+    confidence_scores: Dict[str, float] = Field(..., description="Score/probabilidad por grupo")
+    group_metrics: Dict[str, GroupMetric] = Field(..., description="Métricas avanzadas por grupo")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "weaknesses_detected": ["weak_G2", "weak_G4"],
+                "total_weaknesses": 2,
+                "confidence_scores": {
+                    "weak_G1": 0.21,
+                    "weak_G2": 0.68,
+                    "weak_G3": 0.33,
+                    "weak_G4": 0.74,
+                    "weak_G5": 0.29
+                },
+                "group_metrics": {
+                    "G1": {
+                        "score": 0.21,
+                        "threshold": 0.4,
+                        "is_weak": False,
+                        "missing_to_clear_pct": 0,
+                        "achievement_pct": 100
+                    },
+                    "G2": {
+                        "score": 0.68,
+                        "threshold": 0.45,
+                        "is_weak": True,
+                        "missing_to_clear_pct": 41.82,
+                        "achievement_pct": 58.18
+                    },
+                    "G3": {
+                        "score": 0.33,
+                        "threshold": 0.42,
+                        "is_weak": False,
+                        "missing_to_clear_pct": 0,
+                        "achievement_pct": 100
+                    },
+                    "G4": {
+                        "score": 0.74,
+                        "threshold": 0.5,
+                        "is_weak": True,
+                        "missing_to_clear_pct": 48,
+                        "achievement_pct": 52
+                    },
+                    "G5": {
+                        "score": 0.29,
+                        "threshold": 0.47,
+                        "is_weak": False,
+                        "missing_to_clear_pct": 0,
+                        "achievement_pct": 100
+                    }
+                }
+            }
+        }
 
 
 # ============================================================================
@@ -434,108 +483,34 @@ async def health_check():
 
 @app.post(
     "/predict",
-    response_model=PredictionResponse,
+    response_model=PredictionV2Response,
     tags=["Predicción"],
     summary="Detectar carencias vocales",
-    responses={
-        200: {
-            "description": "Predicción exitosa",
-            "content": {
-                "application/json": {
-                    "examples": {
-                        "sin_carencias": {
-                            "summary": "Cantante profesional",
-                            "value": {
-                                "success": True,
-                                "weaknesses": {
-                                    "weak_G1": 0,
-                                    "weak_G2": 0,
-                                    "weak_G3": 0,
-                                    "weak_G4": 0,
-                                    "weak_G5": 0
-                                },
-                                "weaknesses_detected": [],
-                                "total_weaknesses": 0,
-                                "confidence_scores": {
-                                    "weak_G1": 0.0234,
-                                    "weak_G2": 0.0156,
-                                    "weak_G3": 0.0089,
-                                    "weak_G4": 0.0312,
-                                    "weak_G5": 0.0045
-                                }
-                            }
-                        },
-                        "con_carencias": {
-                            "summary": "Múltiples carencias",
-                            "value": {
-                                "success": True,
-                                "weaknesses": {
-                                    "weak_G1": 1,
-                                    "weak_G2": 0,
-                                    "weak_G3": 0,
-                                    "weak_G4": 1,
-                                    "weak_G5": 1
-                                },
-                                "weaknesses_detected": ["weak_G1", "weak_G4", "weak_G5"],
-                                "total_weaknesses": 3,
-                                "confidence_scores": {
-                                    "weak_G1": 0.8524,
-                                    "weak_G2": 0.1241,
-                                    "weak_G3": 0.2156,
-                                    "weak_G4": 0.7891,
-                                    "weak_G5": 0.9234
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        400: {
-            "description": "Datos de entrada inválidos",
-            "content": {
-                "application/json": {
-                    "example": {
-                        "detail": "El género debe ser 'F' o 'M'"
-                    }
-                }
-            }
-        },
-        500: {
-            "description": "Error interno del servidor",
-            "content": {
-                "application/json": {
-                    "example": {
-                        "detail": "Error al procesar la predicción"
-                    }
-                }
-            }
-        }
-    },
+    description="Incluye métricas por grupo para cuantificar avance/logro y brecha de mejora.",
     response_model_exclude_none=True
 )
 async def predict_weaknesses(metrics: VocalMetrics):
     """
-    Detecta carencias vocales basándose en las métricas proporcionadas.
+    Versión avanzada de predicción.
 
-    Este endpoint recibe las 11 métricas vocales calculadas por el frontend,
-    las normaliza, y predice qué grupos de habilidad presentan carencias.
+    Además de detectar carencias, devuelve por cada grupo:
+    - score de carencia
+    - umbral aplicado
+    - indicador booleano de carencia
+    - porcentaje faltante para salir de zona de carencia
+    - porcentaje de logro
     """
     try:
         logger.info(f"📊 Predicción solicitada para género: {metrics.gender}")
 
-        # 1. Validar género (ya validado por Pydantic, pero por seguridad)
         if metrics.gender not in ['F', 'M']:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="El género debe ser 'F' o 'M'"
             )
 
-        # 2. Preparar datos de entrada
-        # Codificar género
+        # Preparar features
         gender_encoded = gender_encoder.transform([metrics.gender])[0]
-
-        # Crear array con todas las features en el orden correcto
         features = np.array([[
             gender_encoded,
             metrics.meanRmsDb,
@@ -550,36 +525,42 @@ async def predict_weaknesses(metrics: VocalMetrics):
             metrics.rangeSpanSemitones
         ]])
 
-        # 3. Normalizar features
         features_scaled = scaler.transform(features)
 
-        # 4. Predecir con cada modelo
-        predictions = {}
         confidence_scores = {}
-        weaknesses_list = []
+        group_metrics = {}
+        weaknesses_detected = []
 
-        for group_name, model in models.items():
-            # Predicción binaria
-            prediction = int(model.predict(features_scaled)[0])
-            predictions[group_name] = prediction
+        # Calcular scores y métricas por grupo usando umbrales configurables
+        for idx, (group_name, model) in enumerate(models.items(), start=1):
+            score = round(float(model.predict_proba(features_scaled)[0][1]), 4)
+            threshold = GROUP_THRESHOLDS[group_name]
+            is_weak = score >= threshold
 
-            # Probabilidad (confidence)
-            proba = float(model.predict_proba(features_scaled)[0][1])
-            confidence_scores[group_name] = round(proba, 4)
+            if is_weak:
+                missing_to_clear_pct = round(((score - threshold) / (1 - threshold)) * 100, 2)
+                achievement_pct = round(100 - missing_to_clear_pct, 2)
+                weaknesses_detected.append(group_name)
+            else:
+                missing_to_clear_pct = 0.0
+                achievement_pct = 100.0
 
-            # Si hay carencia, agregar a la lista
-            if prediction == 1:
-                weaknesses_list.append(group_name)
+            confidence_scores[group_name] = score
+            group_metrics[f"G{idx}"] = GroupMetric(
+                score=score,
+                threshold=threshold,
+                is_weak=is_weak,
+                missing_to_clear_pct=missing_to_clear_pct,
+                achievement_pct=achievement_pct
+            )
 
-        logger.info(f"✅ Predicción completada: {sum(predictions.values())} carencias detectadas")
+        logger.info(f"✅ Predicción completada: {len(weaknesses_detected)} carencias detectadas")
 
-        # 5. Construir respuesta
-        return PredictionResponse(
-            success=True,
-            weaknesses=WeaknessDetection(**predictions),
-            weaknesses_detected=weaknesses_list,
-            total_weaknesses=sum(predictions.values()),
-            confidence_scores=confidence_scores
+        return PredictionV2Response(
+            weaknesses_detected=weaknesses_detected,
+            total_weaknesses=len(weaknesses_detected),
+            confidence_scores=confidence_scores,
+            group_metrics=group_metrics
         )
 
     except HTTPException:
@@ -612,14 +593,6 @@ async def predict_weaknesses(metrics: VocalMetrics):
                         "total_predictions": 5,
                         "results": [
                             {
-                                "success": True,
-                                "weaknesses": {
-                                    "weak_G1": 0,
-                                    "weak_G2": 0,
-                                    "weak_G3": 0,
-                                    "weak_G4": 0,
-                                    "weak_G5": 0
-                                },
                                 "weaknesses_detected": [],
                                 "total_weaknesses": 0,
                                 "confidence_scores": {
