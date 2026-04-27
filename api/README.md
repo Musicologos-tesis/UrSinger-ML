@@ -57,14 +57,6 @@ Detectar carencias vocales
 **Response:**
 ```json
 {
-  "success": true,
-  "weaknesses": {
-    "weak_G1": 0,
-    "weak_G2": 0,
-    "weak_G3": 0,
-    "weak_G4": 0,
-    "weak_G5": 0
-  },
   "weaknesses_detected": [],
   "total_weaknesses": 0,
   "confidence_scores": {
@@ -101,17 +93,7 @@ interface VocalMetrics {
   rangeSpanSemitones: number;
 }
 
-interface WeaknessDetection {
-  weak_G1: number;
-  weak_G2: number;
-  weak_G3: number;
-  weak_G4: number;
-  weak_G5: number;
-}
-
 interface PredictionResponse {
-  success: boolean;
-  weaknesses: WeaknessDetection;
   weaknesses_detected: string[];
   total_weaknesses: number;
   confidence_scores: Record<string, number>;
