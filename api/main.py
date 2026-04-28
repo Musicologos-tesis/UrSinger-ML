@@ -129,7 +129,7 @@ class VocalMetrics(BaseModel):
         ...,
         description="Duración efectiva de notas sostenidas (segundos). Valores típicos: 1.5-4",
         example=2.8,
-        ge=0.1,
+        ge=0,
         le=10
     )
     attackLatencyMs: float = Field(
