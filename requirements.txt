@@ -7,4 +7,5 @@ scikit-learn
 xgboost
 joblib
 matplotlib
+seaborn
 tqdm

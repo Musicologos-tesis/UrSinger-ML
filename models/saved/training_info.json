@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-15T01:42:00.868326",
+  "timestamp": "2026-05-08T16:07:31.529593",
   "dataset_path": "C:\\Users\\antho\\OneDrive\\Documents\\UrSinger\\ml\\data\\training_data_augmented.csv",
   "test_size": 0.2,
   "random_state": 42,
@@ -25,6 +25,6 @@
   ],
   "num_models": 5,
   "model_type": "XGBoost",
-  "average_accuracy": 0.9551020408163264,
-  "average_f1_score": 0.8044444444444444
+  "average_accuracy": 0.9428571428571428,
+  "average_f1_score": 0.7431480284421461
 }
