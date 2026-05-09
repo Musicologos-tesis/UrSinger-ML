@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import pandas as pd; df = pd.read_csv\\('c:\\\\\\\\Users\\\\\\\\antho\\\\\\\\OneDrive\\\\\\\\Documents\\\\\\\\UrSinger\\\\\\\\ml\\\\\\\\data\\\\\\\\training_data_augmented.csv'\\); print\\('Total rows:', len\\(df\\)\\); print\\('dynamicRangeDb min:', df['dynamicRangeDb'].min\\(\\)\\); print\\('dynamicRangeDb max:', df['dynamicRangeDb'].max\\(\\)\\); print\\('rangeSpanSemitones min:', df['rangeSpanSemitones'].min\\(\\)\\); print\\('rangeSpanSemitones max:', df['rangeSpanSemitones'].max\\(\\)\\)\")"
+    ]
+  }
+}

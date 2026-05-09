@@ -105,7 +105,7 @@ def degrade_for_G4(row):
     # Aumentar inconsistencia
     new_row['rmsConsistency'] = row['rmsConsistency'] + np.random.uniform(6, 11)
     # Reducir rango dinámico
-    new_row['dynamicRangeDb'] = max(25, row['dynamicRangeDb'] - np.random.uniform(10, 20))
+    new_row['dynamicRangeDb'] = max(3, row['dynamicRangeDb'] - np.random.uniform(20, 55))
     # Aumentar inestabilidad
     new_row['stabilityCents'] = row['stabilityCents'] + np.random.uniform(6, 12)
     new_row['weak_G4'] = 1
@@ -117,9 +117,9 @@ def degrade_for_G5(row):
     """
     new_row = row.copy()
     # Reducir significativamente el rango
-    new_row['rangeMinMidi'] = row['rangeMinMidi'] + np.random.uniform(2, 5)
-    new_row['rangeMaxMidi'] = row['rangeMaxMidi'] - np.random.uniform(2, 5)
-    new_row['rangeSpanSemitones'] = max(6, row['rangeSpanSemitones'] - np.random.uniform(5, 10))
+    new_row['rangeMinMidi'] = row['rangeMinMidi'] + np.random.uniform(4, 8)
+    new_row['rangeMaxMidi'] = row['rangeMaxMidi'] - np.random.uniform(4, 8)
+    new_row['rangeSpanSemitones'] = max(2, row['rangeSpanSemitones'] - np.random.uniform(12, 18))
     # Aumentar inestabilidad
     new_row['stabilityCents'] = row['stabilityCents'] + np.random.uniform(7, 14)
     # Reducir volumen
