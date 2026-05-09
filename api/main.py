@@ -63,6 +63,15 @@ GROUP_THRESHOLDS = {
     "weak_G5": 0.47,
 }
 
+# Reglas físicas de respaldo: valores tan extremos que son carencia independientemente del modelo
+PHYSICAL_WEAKNESS_RULES = {
+    "weak_G1": lambda m: m.durationSec < 1.2,
+    "weak_G2": lambda m: m.precisionCents > 100,
+    "weak_G3": lambda m: m.stabilityCents > 50,
+    "weak_G4": lambda m: m.dynamicRangeDb < 10.0,
+    "weak_G5": lambda m: m.rangeSpanSemitones < 6,
+}
+
 @app.on_event("startup")
 async def load_models():
     """Carga los modelos y scalers al iniciar la API"""
@@ -141,17 +150,17 @@ class VocalMetrics(BaseModel):
     )
     precisionCents: float = Field(
         ...,
-        description="Diferencia promedio entre pitch emitido y objetivo (cents). Menor = mejor. Valores típicos: 5-30",
+        description="Diferencia promedio entre pitch emitido y objetivo (cents). Menor = mejor. Valores típicos: 5-30. Puede superar 100 si el cantante canta notas equivocadas.",
         example=12.4,
         ge=0,
-        le=100
+        le=600
     )
     stabilityCents: float = Field(
         ...,
-        description="Desviación tonal durante notas sostenidas (cents). Menor = más estable. Valores típicos: 3-20",
+        description="Desviación tonal durante notas sostenidas (cents). Menor = más estable. Valores típicos: 3-20. Puede superar 50 si el cantante oscila entre notas.",
         example=8.9,
         ge=0,
-        le=50
+        le=200
     )
     rangeMinMidi: float = Field(
         ...,
@@ -535,10 +544,18 @@ async def predict_weaknesses(metrics: VocalMetrics):
         for idx, (group_name, model) in enumerate(models.items(), start=1):
             score = round(float(model.predict_proba(features_scaled)[0][1]), 4)
             threshold = GROUP_THRESHOLDS[group_name]
-            is_weak = score >= threshold
+
+            forced_weak = (
+                group_name in PHYSICAL_WEAKNESS_RULES
+                and PHYSICAL_WEAKNESS_RULES[group_name](metrics)
+            )
+            is_weak = (score >= threshold) or forced_weak
 
             if is_weak:
-                missing_to_clear_pct = round(((score - threshold) / (1 - threshold)) * 100, 2)
+                # Si el modelo no supera el umbral pero la regla física forzó debilidad,
+                # usar 0.80 como score efectivo para los porcentajes (evidencia clara de carencia)
+                effective_score = score if score >= threshold else 0.80
+                missing_to_clear_pct = round(((effective_score - threshold) / (1 - threshold)) * 100, 2)
                 achievement_pct = round(100 - missing_to_clear_pct, 2)
                 weaknesses_detected.append(group_name)
             else:

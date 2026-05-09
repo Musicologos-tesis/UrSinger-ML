@@ -1,6 +1,6 @@
 """
 Script para generar visualizaciones del proceso de entrenamiento del modelo
-para la presentación de tesis.
+para la presentacion de tesis.
 """
 
 import matplotlib.pyplot as plt
@@ -20,6 +20,50 @@ plt.rcParams['font.size'] = 10
 output_dir = Path("presentation_images")
 output_dir.mkdir(exist_ok=True)
 
+
+def _load_json(path: Path):
+    try:
+        with open(path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+def _get_base_dataset_stats():
+    base_path = Path('data/training_data.csv')
+    if not base_path.exists():
+        return None
+    df = pd.read_csv(base_path)
+    total = len(df)
+    singers = df['singer_id'].nunique() if 'singer_id' in df.columns else None
+    vowels = df['vowel'].nunique() if 'vowel' in df.columns else None
+    per_vowel = int(round(total / vowels)) if vowels else None
+    return {
+        'total': total,
+        'singers': singers,
+        'vowels': vowels,
+        'per_vowel': per_vowel
+    }
+
+
+def _get_augmented_count():
+    aug_path = Path('data/training_data_augmented.csv')
+    if not aug_path.exists():
+        return None
+    df = pd.read_csv(aug_path)
+    return len(df)
+
+
+def _get_avg_accuracy():
+    report = _load_json(Path('models/reports/evaluation_report.json'))
+    if not report:
+        return None
+    accuracies = [report[g].get('accuracy') for g in report.keys()]
+    accuracies = [a for a in accuracies if a is not None]
+    if not accuracies:
+        return None
+    return float(np.mean(accuracies))
+
 # ============================================================================
 # 1. PIPELINE DEL PROCESO
 # ============================================================================
@@ -28,13 +72,38 @@ def create_pipeline_diagram():
     fig, ax = plt.subplots(figsize=(14, 8))
     ax.axis('off')
 
+    base_stats = _get_base_dataset_stats()
+    aug_count = _get_augmented_count()
+    avg_accuracy = _get_avg_accuracy()
+
+    if base_stats:
+        per_vowel_text = f", {base_stats['per_vowel']} per vowel" if base_stats['per_vowel'] else ""
+        step_1 = (
+            "1. VocalSet dataset\n"
+            f"({base_stats['singers']} professional singers\n"
+            f"{base_stats['total']} samples total{per_vowel_text})"
+        )
+    else:
+        step_1 = "1. VocalSet dataset\n(20 professional singers\n100 samples total)"
+
+    if base_stats and aug_count:
+        synthetic_count = max(aug_count - base_stats['total'], 0)
+        step_4 = f"4. Synthetic data\ngeneration\n(+{synthetic_count} weakness samples)"
+    else:
+        step_4 = "4. Synthetic data\ngeneration\n(+weakness samples)"
+
+    if avg_accuracy is not None:
+        step_6 = f"6. Multi-label\nevaluation\n(Accuracy: {avg_accuracy*100:.1f}%)"
+    else:
+        step_6 = "6. Multi-label\nevaluation"
+
     steps = [
-        "1. Dataset VocalSet\n(20 cantantes profesionales\n100 muestras por vocal)",
-        "2. Extracción de\nMétricas Vocales\n(11 features)",
-        "3. Definición de\nGrupos de Habilidad\n(5 grupos: G1-G5)",
-        "4. Generación de\nDatos Sintéticos\n(+30% con carencias)",
-        "5. Entrenamiento\nXGBoost\n(5 modelos binarios)",
-        "6. Evaluación\nMulti-label\n(Accuracy: 95.5%)"
+        step_1,
+        "2. Vocal feature\nextraction\n(11 features)",
+        "3. Skill group\ndefinition\n(5 groups: G1-G5)",
+        step_4,
+        "5. XGBoost\ntraining\n(5 binary models)",
+        step_6
     ]
 
     # Posiciones
@@ -54,7 +123,7 @@ def create_pipeline_diagram():
                        xytext=(x+0.08, y_pos),
                        arrowprops=dict(arrowstyle='->', lw=2.5, color='darkgreen'))
 
-    plt.title('Pipeline de Entrenamiento del Modelo de Detección de Carencias Vocales',
+    plt.title('Training Pipeline for Vocal Weakness Detection',
              fontsize=16, weight='bold', pad=20)
     plt.tight_layout()
     plt.savefig(output_dir / '1_pipeline.png', dpi=300, bbox_inches='tight')
@@ -70,32 +139,32 @@ def create_metrics_groups_diagram():
     ax.axis('off')
 
     groups = {
-        'G1: Soporte\nRespiratorio': [
+        'G1: Breath\nSupport': [
             'meanRmsDb',
             'rmsConsistency',
             'dynamicRangeDb',
             'stabilityCents',
             'durationSec'
         ],
-        'G2: Afinación\ny Oído Tonal': [
+        'G2: Pitch\nAccuracy': [
             'precisionCents',
             'stabilityCents',
             'rangeSpanSemitones',
             'meanRmsDb'
         ],
-        'G3: Estabilidad\ny Vibrato': [
+        'G3: Stability\nand Vibrato': [
             'stabilityCents',
             'rmsConsistency',
             'attackLatencyMs',
             'meanRmsDb'
         ],
-        'G4: Potencia\ny Control Dinámico': [
+        'G4: Power\nand Dynamics': [
             'meanRmsDb',
             'rmsConsistency',
             'dynamicRangeDb',
             'stabilityCents'
         ],
-        'G5: Rango\ny Flexibilidad': [
+        'G5: Range\nand Flexibility': [
             'rangeMinMidi',
             'rangeMaxMidi',
             'rangeSpanSemitones',
@@ -130,7 +199,7 @@ def create_metrics_groups_diagram():
         ax.annotate('', xy=(0.35, y), xytext=(0.22, y),
                    arrowprops=dict(arrowstyle='->', lw=2, color='black'))
 
-    plt.title('Grupos de Habilidad Vocal y Métricas Asociadas',
+    plt.title('Vocal Skill Groups and Associated Metrics',
              fontsize=18, weight='bold', pad=20)
     plt.tight_layout()
     plt.savefig(output_dir / '2_metrics_groups.png', dpi=300, bbox_inches='tight')
@@ -167,9 +236,9 @@ def create_results_chart():
                    f'{height:.1f}%',
                    ha='center', va='bottom', fontsize=10, weight='bold')
 
-    ax.set_xlabel('Grupos de Habilidad', fontsize=14, weight='bold')
-    ax.set_ylabel('Porcentaje (%)', fontsize=14, weight='bold')
-    ax.set_title('Rendimiento del Modelo por Grupo de Habilidad',
+    ax.set_xlabel('Skill Groups', fontsize=14, weight='bold')
+    ax.set_ylabel('Percentage (%)', fontsize=14, weight='bold')
+    ax.set_title('Model Performance by Skill Group',
                 fontsize=16, weight='bold', pad=20)
     ax.set_xticks(x)
     ax.set_xticklabels(groups, fontsize=12)
@@ -183,6 +252,62 @@ def create_results_chart():
     plt.tight_layout()
     plt.savefig(output_dir / '3_model_results.png', dpi=300, bbox_inches='tight')
     print("✓ Gráfico de resultados creado")
+    plt.close()
+
+# ============================================================================
+# 3B. RESULTADOS CV (BASELINES + XGBOOST)
+# ============================================================================
+def create_cv_results_chart():
+    """Crea grafico de barras con resumen de CV por modelo"""
+    report_path = Path('models/reports/cv_report.json')
+    if not report_path.exists():
+        print("! cv_report.json no encontrado, omitiendo grafico CV")
+        return
+
+    with open(report_path, 'r') as f:
+        cv_report = json.load(f)
+
+    summary = cv_report.get('summary', {})
+    if not summary:
+        print("! Resumen CV vacio, omitiendo grafico CV")
+        return
+
+    model_names = list(summary.keys())
+    accuracies = [summary[m].get('avg_accuracy', 0.0) or 0.0 for m in model_names]
+    f1_scores = [summary[m].get('avg_f1_score', 0.0) or 0.0 for m in model_names]
+    pr_aucs = [summary[m].get('avg_pr_auc', 0.0) or 0.0 for m in model_names]
+
+    x = np.arange(len(model_names))
+    width = 0.25
+
+    fig, ax = plt.subplots(figsize=(12, 7))
+    bars1 = ax.bar(x - width, np.array(accuracies) * 100, width, label='Accuracy',
+                   color='#4472C4', alpha=0.85, edgecolor='black')
+    bars2 = ax.bar(x, np.array(f1_scores) * 100, width, label='F1-Score',
+                   color='#ED7D31', alpha=0.85, edgecolor='black')
+    bars3 = ax.bar(x + width, np.array(pr_aucs) * 100, width, label='PR-AUC',
+                   color='#70AD47', alpha=0.85, edgecolor='black')
+
+    for bars in [bars1, bars2, bars3]:
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{height:.1f}%',
+                    ha='center', va='bottom', fontsize=9, weight='bold')
+
+    ax.set_xlabel('Models', fontsize=14, weight='bold')
+    ax.set_ylabel('Percentage (%)', fontsize=14, weight='bold')
+    ax.set_title('CV Results by Model (GroupKFold)',
+                 fontsize=16, weight='bold', pad=20)
+    ax.set_xticks(x)
+    ax.set_xticklabels(model_names, fontsize=12)
+    ax.legend(fontsize=11, loc='lower right')
+    ax.grid(axis='y', alpha=0.3)
+    ax.set_ylim([0, 105])
+
+    plt.tight_layout()
+    plt.savefig(output_dir / '7_cv_summary.png', dpi=300, bbox_inches='tight')
+    print("✓ Grafico CV creado")
     plt.close()
 
 # ============================================================================
@@ -208,15 +333,15 @@ def create_confusion_matrices():
 
         axes[i].set_title(f'{group}\nAccuracy: {results[group]["accuracy"]*100:.1f}%',
                          fontsize=13, weight='bold')
-        axes[i].set_xlabel('Predicción', fontsize=11, weight='bold')
-        axes[i].set_ylabel('Real', fontsize=11, weight='bold')
-        axes[i].set_xticklabels(['Sin carencia', 'Con carencia'], fontsize=10)
-        axes[i].set_yticklabels(['Sin carencia', 'Con carencia'], fontsize=10)
+        axes[i].set_xlabel('Prediction', fontsize=11, weight='bold')
+        axes[i].set_ylabel('Actual', fontsize=11, weight='bold')
+        axes[i].set_xticklabels(['No weakness', 'Weakness'], fontsize=10)
+        axes[i].set_yticklabels(['No weakness', 'Weakness'], fontsize=10)
 
     # Remover el último subplot vacío
     fig.delaxes(axes[5])
 
-    plt.suptitle('Matrices de Confusión por Grupo de Habilidad',
+    plt.suptitle('Confusion Matrices by Skill Group',
                 fontsize=18, weight='bold', y=0.98)
     plt.tight_layout()
     plt.savefig(output_dir / '4_confusion_matrices.png', dpi=300, bbox_inches='tight')
@@ -236,8 +361,8 @@ def create_dataset_distribution():
     gender_counts = df['gender'].value_counts()
     axes[0, 0].bar(gender_counts.index, gender_counts.values,
                    color=['#FF69B4', '#4169E1'], alpha=0.7, edgecolor='black', linewidth=2)
-    axes[0, 0].set_title('Distribución por Género', fontsize=14, weight='bold')
-    axes[0, 0].set_ylabel('Cantidad de muestras', fontsize=12, weight='bold')
+    axes[0, 0].set_title('Gender Distribution', fontsize=14, weight='bold')
+    axes[0, 0].set_ylabel('Number of samples', fontsize=12, weight='bold')
     for i, v in enumerate(gender_counts.values):
         axes[0, 0].text(i, v + 5, str(v), ha='center', fontsize=12, weight='bold')
 
@@ -245,8 +370,8 @@ def create_dataset_distribution():
     vowel_counts = df['vowel'].value_counts().sort_index()
     axes[0, 1].bar(vowel_counts.index, vowel_counts.values,
                    color='#90EE90', alpha=0.7, edgecolor='black', linewidth=2)
-    axes[0, 1].set_title('Distribución por Vocal', fontsize=14, weight='bold')
-    axes[0, 1].set_ylabel('Cantidad de muestras', fontsize=12, weight='bold')
+    axes[0, 1].set_title('Vowel Distribution', fontsize=14, weight='bold')
+    axes[0, 1].set_ylabel('Number of samples', fontsize=12, weight='bold')
     for i, v in enumerate(vowel_counts.values):
         axes[0, 1].text(i, v + 2, str(v), ha='center', fontsize=12, weight='bold')
 
@@ -257,32 +382,32 @@ def create_dataset_distribution():
                     color='#FFD700', alpha=0.7, edgecolor='black', linewidth=2)
     axes[1, 0].set_yticks(range(len(weak_counts)))
     axes[1, 0].set_yticklabels(weak_counts.index, fontsize=11)
-    axes[1, 0].set_title('Cantidad de Muestras con Carencias por Grupo',
+    axes[1, 0].set_title('Weakness Samples by Group',
                         fontsize=14, weight='bold')
-    axes[1, 0].set_xlabel('Cantidad de muestras', fontsize=12, weight='bold')
+    axes[1, 0].set_xlabel('Number of samples', fontsize=12, weight='bold')
     for i, v in enumerate(weak_counts.values):
         axes[1, 0].text(v + 1, i, str(v), va='center', fontsize=12, weight='bold')
 
     # 5.4 Estadísticas generales
     axes[1, 1].axis('off')
     stats_text = f"""
-    ESTADÍSTICAS DEL DATASET
+    DATASET STATISTICS
     
-    Total de muestras: {len(df):,}
+    Total samples: {len(df):,}
     
-    Cantantes únicos: {df['singer_id'].nunique()}
+    Unique singers: {df['singer_id'].nunique()}
     
-    Géneros: {df['gender'].nunique()} (F: {(df['gender']=='F').sum()}, M: {(df['gender']=='M').sum()})
+    Genders: {df['gender'].nunique()} (F: {(df['gender']=='F').sum()}, M: {(df['gender']=='M').sum()})
     
-    Vocales: {df['vowel'].nunique()} (A, E, I, O, U)
+    Vowels: {df['vowel'].nunique()} (A, E, I, O, U)
     
-    Features extraídos: 11
+    Extracted features: 11
     
-    Grupos de habilidad: 5
+    Skill groups: 5
     
-    Muestras originales: {len(df[df[weak_cols].sum(axis=1) == 0])}
+    Original samples: {len(df[df[weak_cols].sum(axis=1) == 0])}
     
-    Muestras con carencias: {len(df[df[weak_cols].sum(axis=1) > 0])}
+    Samples with weaknesses: {len(df[df[weak_cols].sum(axis=1) > 0])}
     
     Split: 80% Train / 20% Test
     """
@@ -292,11 +417,11 @@ def create_dataset_distribution():
     axes[1, 1].text(0.5, 0.5, stats_text, ha='center', va='center',
                    fontsize=12, bbox=bbox, family='monospace', weight='bold')
 
-    plt.suptitle('Análisis del Dataset de Entrenamiento',
+    plt.suptitle('Training Dataset Analysis',
                 fontsize=18, weight='bold', y=0.98)
     plt.tight_layout()
     plt.savefig(output_dir / '5_dataset_distribution.png', dpi=300, bbox_inches='tight')
-    print("✓ Distribución del dataset creada")
+    print("✓ Dataset distribution created")
     plt.close()
 
 # ============================================================================
@@ -308,31 +433,31 @@ def create_metrics_extraction_summary():
     ax.axis('off')
 
     metrics_info = [
-        ('meanRmsDb', 'Nivel promedio de volumen', 'long_tones/straight', 'dBFS'),
-        ('rmsConsistency', 'Estabilidad del volumen', 'long_tones/straight', 'dBFS (std)'),
-        ('dynamicRangeDb', 'Rango dinámico', 'long_tones/messa', 'dBFS'),
-        ('durationSec', 'Duración efectiva de notas', 'long_tones/straight', 'segundos'),
-        ('attackLatencyMs', 'Latencia de ataque', 'long_tones/straight', 'milisegundos'),
-        ('precisionCents', 'Precisión de afinación', 'scales/straight', 'cents'),
-        ('stabilityCents', 'Estabilidad tonal', 'long_tones/straight', 'cents'),
-        ('rangeMinMidi', 'Nota mínima', 'scales/low_piano (C)', 'MIDI'),
-        ('rangeMaxMidi', 'Nota máxima', 'scales/low_piano (F)', 'MIDI'),
-        ('rangeSpanSemitones', 'Extensión vocal', 'scales/low_piano', 'semitonos'),
+        ('meanRmsDb', 'Average volume level', 'long_tones/straight', 'dBFS'),
+        ('rmsConsistency', 'Volume stability', 'long_tones/straight', 'dBFS (std)'),
+        ('dynamicRangeDb', 'Dynamic range', 'long_tones/messa', 'dBFS'),
+        ('durationSec', 'Effective note duration', 'long_tones/straight', 'seconds'),
+        ('attackLatencyMs', 'Attack latency', 'long_tones/straight', 'milliseconds'),
+        ('precisionCents', 'Pitch accuracy', 'scales/straight', 'cents'),
+        ('stabilityCents', 'Pitch stability', 'long_tones/straight', 'cents'),
+        ('rangeMinMidi', 'Minimum note', 'scales/fast_piano (C)', 'MIDI'),
+        ('rangeMaxMidi', 'Maximum note', 'scales/fast_piano (F)', 'MIDI'),
+        ('rangeSpanSemitones', 'Vocal range span', 'scales/fast_piano', 'semitones'),
     ]
 
     y_start = 0.95
     y_step = 0.09
 
-    # Encabezado
+    # Header
     header_bbox = dict(boxstyle='round,pad=0.5', facecolor='navy',
                       edgecolor='black', linewidth=2, alpha=0.9)
-    ax.text(0.15, y_start + 0.03, 'MÉTRICA', ha='center', va='center',
+    ax.text(0.15, y_start + 0.03, 'METRIC', ha='center', va='center',
            fontsize=12, bbox=header_bbox, weight='bold', color='white')
-    ax.text(0.35, y_start + 0.03, 'DESCRIPCIÓN', ha='center', va='center',
+    ax.text(0.35, y_start + 0.03, 'DESCRIPTION', ha='center', va='center',
            fontsize=12, bbox=header_bbox, weight='bold', color='white')
-    ax.text(0.65, y_start + 0.03, 'AUDIO UTILIZADO', ha='center', va='center',
+    ax.text(0.65, y_start + 0.03, 'AUDIO SOURCE', ha='center', va='center',
            fontsize=12, bbox=header_bbox, weight='bold', color='white')
-    ax.text(0.85, y_start + 0.03, 'UNIDAD', ha='center', va='center',
+    ax.text(0.85, y_start + 0.03, 'UNIT', ha='center', va='center',
            fontsize=12, bbox=header_bbox, weight='bold', color='white')
 
     # Datos
@@ -353,11 +478,11 @@ def create_metrics_extraction_summary():
         ax.text(0.85, y, unit, ha='center', va='center',
                fontsize=10, bbox=bbox, weight='bold')
 
-    plt.title('Métricas Vocales Extraídas del Dataset VocalSet',
+    plt.title('Extracted Vocal Metrics from VocalSet Dataset',
              fontsize=18, weight='bold', pad=20)
     plt.tight_layout()
     plt.savefig(output_dir / '6_metrics_extraction.png', dpi=300, bbox_inches='tight')
-    print("✓ Resumen de extracción de métricas creado")
+    print("✓ Metrics extraction summary created")
     plt.close()
 
 # ============================================================================
@@ -365,13 +490,14 @@ def create_metrics_extraction_summary():
 # ============================================================================
 if __name__ == '__main__':
     print("\n" + "="*70)
-    print("  GENERANDO VISUALIZACIONES PARA PRESENTACIÓN DE TESIS")
+    print("  GENERATING VISUALS FOR THESIS PRESENTATION")
     print("="*70 + "\n")
 
     create_pipeline_diagram()
     create_metrics_groups_diagram()
     create_metrics_extraction_summary()
     create_results_chart()
+    create_cv_results_chart()
     create_confusion_matrices()
     create_dataset_distribution()
 
@@ -379,12 +505,13 @@ if __name__ == '__main__':
     print(f"  ✓ TODAS LAS IMÁGENES GUARDADAS EN: {output_dir.absolute()}")
     print("="*70 + "\n")
 
-    print("IMÁGENES GENERADAS:")
-    print("  1. 1_pipeline.png - Pipeline completo del proceso")
-    print("  2. 2_metrics_groups.png - Grupos de habilidad y métricas")
-    print("  3. 3_model_results.png - Accuracy y F1-Score por grupo")
-    print("  4. 4_confusion_matrices.png - Matrices de confusión")
-    print("  5. 5_dataset_distribution.png - Distribución del dataset")
-    print("  6. 6_metrics_extraction.png - Tabla de métricas extraídas")
-    print("\n✓ Listo para insertar en tu PowerPoint!\n")
+    print("GENERATED IMAGES:")
+    print("  1. 1_pipeline.png - Full pipeline overview")
+    print("  2. 2_metrics_groups.png - Skill groups and metrics")
+    print("  3. 3_model_results.png - Accuracy and F1 by group")
+    print("  7. 7_cv_summary.png - CV summary by model")
+    print("  4. 4_confusion_matrices.png - Confusion matrices")
+    print("  5. 5_dataset_distribution.png - Dataset distribution")
+    print("  6. 6_metrics_extraction.png - Metrics extraction table")
+    print("\n✓ Ready to insert into your presentation!\n")
 

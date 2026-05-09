@@ -8,12 +8,21 @@ Este módulo entrena modelos multi-output para predecir debilidades en 5 grupos 
 - G4: Potencia y control dinámico
 - G5: Rango y flexibilidad vocal
 """
+import argparse
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GroupKFold, GroupShuffleSplit
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score
+from sklearn.metrics import (
+    classification_report,
+    confusion_matrix,
+    accuracy_score,
+    f1_score,
+    average_precision_score,
+)
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 import xgboost as xgb
 import joblib
 import json
@@ -21,6 +30,7 @@ import json
 # Configuración
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
+CV_SPLITS = 5
 
 # Rutas
 DATA_PATH = Path(__file__).parent.parent.parent.parent / 'data' / 'training_data_augmented.csv'
@@ -32,6 +42,16 @@ REPORTS_DIR = Path(__file__).parent.parent.parent.parent / 'models' / 'reports'
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
 SCALERS_DIR.mkdir(parents=True, exist_ok=True)
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+
+XGB_PARAMS = {
+    'max_depth': 6,
+    'learning_rate': 0.1,
+    'n_estimators': 100,
+    'objective': 'binary:logistic',
+    'eval_metric': 'logloss',
+    'random_state': RANDOM_STATE,
+    'use_label_encoder': False
+}
 
 
 def load_data():
@@ -47,7 +67,7 @@ def load_data():
     return df
 
 
-def prepare_features_and_targets(df):
+def prepare_features_and_targets(df, return_groups: bool = False, save_encoder: bool = True):
     """Separa features (X) y targets (y)."""
     print("\n" + "="*70)
     print("PREPARANDO FEATURES Y TARGETS")
@@ -94,24 +114,46 @@ def prepare_features_and_targets(df):
     X['gender'] = le.fit_transform(X['gender'])
 
     # Guardar el encoder
-    joblib.dump(le, SCALERS_DIR / 'gender_encoder.pkl')
-    print(f"\n✅ Gender encoder guardado en: {SCALERS_DIR / 'gender_encoder.pkl'}")
+    if save_encoder:
+        joblib.dump(le, SCALERS_DIR / 'gender_encoder.pkl')
+        print(f"\n✅ Gender encoder guardado en: {SCALERS_DIR / 'gender_encoder.pkl'}")
+
+    if return_groups:
+        groups = df['singer_id'] if 'singer_id' in df.columns else None
+        return X, y, feature_columns, target_columns, groups
 
     return X, y, feature_columns, target_columns
 
 
-def split_data(X, y):
+def split_data(X, y, groups=None, strategy: str = "random"):
     """Divide datos en train/test."""
     print("\n" + "="*70)
     print("DIVIDIENDO DATOS (TRAIN/TEST)")
     print("="*70)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
-        test_size=TEST_SIZE,
-        random_state=RANDOM_STATE,
-        stratify=y['weak_G1']  # Estratificar por G1 para balance
-    )
+    if strategy == "group":
+        if groups is None:
+            raise ValueError("Se requiere groups para split por cantante.")
+
+        gss = GroupShuffleSplit(
+            n_splits=1,
+            test_size=TEST_SIZE,
+            random_state=RANDOM_STATE
+        )
+        train_idx, test_idx = next(gss.split(X, y, groups))
+        X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+        y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+
+        print("\nSplit por cantante activado (GroupShuffleSplit)")
+        print(f"Cantantes en train: {groups.iloc[train_idx].nunique()}")
+        print(f"Cantantes en test: {groups.iloc[test_idx].nunique()}")
+    else:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y,
+            test_size=TEST_SIZE,
+            random_state=RANDOM_STATE,
+            stratify=y['weak_G1']  # Estratificar por G1 para balance
+        )
 
     print(f"\nTrain set: {X_train.shape[0]} muestras ({(1-TEST_SIZE)*100:.0f}%)")
     print(f"Test set: {X_test.shape[0]} muestras ({TEST_SIZE*100:.0f}%)")
@@ -165,24 +207,14 @@ def train_models(X_train, y_train, target_columns):
     models = {}
 
     # Parámetros de XGBoost
-    params = {
-        'max_depth': 6,
-        'learning_rate': 0.1,
-        'n_estimators': 100,
-        'objective': 'binary:logistic',
-        'eval_metric': 'logloss',
-        'random_state': RANDOM_STATE,
-        'use_label_encoder': False
-    }
-
     print(f"\nParámetros de XGBoost:")
-    for key, value in params.items():
+    for key, value in XGB_PARAMS.items():
         print(f"  {key}: {value}")
 
     for target in target_columns:
         print(f"\n📊 Entrenando modelo para {target}...")
 
-        model = xgb.XGBClassifier(**params)
+        model = xgb.XGBClassifier(**XGB_PARAMS)
         model.fit(X_train, y_train[target])
 
         models[target] = model
@@ -195,6 +227,144 @@ def train_models(X_train, y_train, target_columns):
     print(f"\n✅ Total de modelos entrenados: {len(models)}")
 
     return models
+
+
+def _predict_scores(model, X):
+    if hasattr(model, "predict_proba"):
+        proba = model.predict_proba(X)
+        if proba.ndim == 2 and proba.shape[1] > 1:
+            return proba[:, 1]
+        return proba.ravel()
+
+    if hasattr(model, "decision_function"):
+        scores = model.decision_function(X)
+        return np.ravel(scores)
+
+    return None
+
+
+def _safe_average_precision(y_true, y_scores):
+    if y_scores is None:
+        return None
+    if len(np.unique(y_true)) < 2:
+        return None
+    return float(average_precision_score(y_true, y_scores))
+
+
+def _mean_ignore_none(values):
+    valid = [v for v in values if v is not None]
+    if not valid:
+        return None
+    return float(np.mean(valid))
+
+
+def get_model_factories():
+    return {
+        'log_reg': lambda: LogisticRegression(
+            max_iter=1000,
+            class_weight='balanced',
+            random_state=RANDOM_STATE
+        ),
+        'random_forest': lambda: RandomForestClassifier(
+            n_estimators=300,
+            random_state=RANDOM_STATE,
+            class_weight='balanced'
+        ),
+        'xgboost': lambda: xgb.XGBClassifier(**XGB_PARAMS)
+    }
+
+
+def cross_validate_models(X, y, groups, target_columns, n_splits: int = CV_SPLITS):
+    """Cross-validation por cantante con modelos baseline y XGBoost."""
+    if groups is None:
+        raise ValueError("Se requiere groups para GroupKFold.")
+
+    gkf = GroupKFold(n_splits=n_splits)
+    model_factories = get_model_factories()
+
+    results = {model_name: [] for model_name in model_factories}
+
+    for fold_idx, (train_idx, test_idx) in enumerate(gkf.split(X, y['weak_G1'], groups)):
+        X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+        y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+
+        X_train_scaled = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
+        X_test_scaled = pd.DataFrame(X_test_scaled, columns=X_test.columns, index=X_test.index)
+
+        for model_name, factory in model_factories.items():
+            per_target = {}
+
+            for target in target_columns:
+                model = factory()
+                model.fit(X_train_scaled, y_train[target])
+
+                y_pred = model.predict(X_test_scaled)
+                y_scores = _predict_scores(model, X_test_scaled)
+
+                per_target[target] = {
+                    'accuracy': float(accuracy_score(y_test[target], y_pred)),
+                    'f1_score': float(f1_score(y_test[target], y_pred, zero_division=0)),
+                    'pr_auc': _safe_average_precision(y_test[target], y_scores)
+                }
+
+            avg_accuracy = np.mean([m['accuracy'] for m in per_target.values()])
+            avg_f1 = np.mean([m['f1_score'] for m in per_target.values()])
+            avg_pr = _mean_ignore_none([m['pr_auc'] for m in per_target.values()])
+
+            results[model_name].append({
+                'fold': fold_idx + 1,
+                'num_train': int(len(train_idx)),
+                'num_test': int(len(test_idx)),
+                'per_target': per_target,
+                'average': {
+                    'accuracy': float(avg_accuracy),
+                    'f1_score': float(avg_f1),
+                    'pr_auc': avg_pr
+                }
+            })
+
+    return results
+
+
+def summarize_cv_results(results):
+    summary = {}
+    for model_name, folds in results.items():
+        avg_accuracy = _mean_ignore_none([f['average']['accuracy'] for f in folds])
+        avg_f1 = _mean_ignore_none([f['average']['f1_score'] for f in folds])
+        avg_pr = _mean_ignore_none([f['average']['pr_auc'] for f in folds])
+
+        summary[model_name] = {
+            'avg_accuracy': avg_accuracy,
+            'avg_f1_score': avg_f1,
+            'avg_pr_auc': avg_pr,
+            'num_folds': len(folds)
+        }
+
+    return summary
+
+
+def save_cv_report(results, feature_columns, target_columns, n_splits: int):
+    report = {
+        'timestamp': pd.Timestamp.now().isoformat(),
+        'dataset_path': str(DATA_PATH),
+        'cv_splits': n_splits,
+        'random_state': RANDOM_STATE,
+        'features': feature_columns,
+        'targets': target_columns,
+        'models': list(results.keys()),
+        'summary': summarize_cv_results(results),
+        'folds': results
+    }
+
+    report_path = REPORTS_DIR / 'cv_report.json'
+    with open(report_path, 'w') as f:
+        json.dump(report, f, indent=2)
+
+    print(f"\n✅ Reporte CV guardado en: {report_path}")
 
 
 def evaluate_models(models, X_test, y_test, target_columns):
@@ -287,20 +457,50 @@ def save_training_info(feature_columns, target_columns, results):
     print(f"\n✅ Información guardada en: {info_path}")
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Entrenamiento y evaluacion de modelos XGBoost")
+    parser.add_argument("--mode", choices=["train", "cv"], default="train")
+    parser.add_argument("--split-strategy", choices=["random", "group"], default="group")
+    parser.add_argument("--cv-splits", type=int, default=CV_SPLITS)
+    return parser.parse_args()
+
+
 def main():
     """Pipeline principal de entrenamiento."""
     print("\n" + "🎵" * 35)
     print("ENTRENAMIENTO DE MODELO - URSINGER ML")
     print("🎵" * 35 + "\n")
 
+    args = parse_args()
+
     # 1. Cargar datos
     df = load_data()
 
     # 2. Preparar features y targets
-    X, y, feature_columns, target_columns = prepare_features_and_targets(df)
+    if args.mode == "cv":
+        X, y, feature_columns, target_columns, groups = prepare_features_and_targets(
+            df,
+            return_groups=True,
+            save_encoder=False
+        )
+
+        results = cross_validate_models(X, y, groups, target_columns, n_splits=args.cv_splits)
+        save_cv_report(results, feature_columns, target_columns, args.cv_splits)
+        print("\nEVALUACION CV COMPLETADA")
+        return
+
+    X, y, feature_columns, target_columns, groups = prepare_features_and_targets(
+        df,
+        return_groups=True
+    )
 
     # 3. Split train/test
-    X_train, X_test, y_train, y_test = split_data(X, y)
+    X_train, X_test, y_train, y_test = split_data(
+        X,
+        y,
+        groups=groups,
+        strategy=args.split_strategy
+    )
 
     # 4. Normalizar
     X_train_scaled, X_test_scaled, scaler = normalize_features(X_train, X_test)
