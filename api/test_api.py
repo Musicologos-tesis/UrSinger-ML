@@ -147,6 +147,26 @@ def _build_multi_candidate(df: pd.DataFrame) -> Dict[str, Any]:
     return candidate
 
 
+def test_predict_G2_weakness():
+    metrics = {
+        "gender": "F",
+        "meanRmsDb": -25.5,
+        "rmsConsistency": 3.2,
+        "dynamicRangeDb": 70.0,
+        "durationSec": 2.8,
+        "attackLatencyMs": 75.0,
+        "precisionCents": 700,   # Extremo: será clampado a 600, que supera el umbral de 100
+        "stabilityCents": 6.2,
+        "rangeMinMidi": 58.0,
+        "rangeMaxMidi": 80.0,
+        "rangeSpanSemitones": 22.0
+    }
+    body = _post_predict("G2 weakness (precisionCents=700, extreme out of range)", metrics)
+    if "weak_G2" not in body["weaknesses_detected"]:
+        raise AssertionError("Se esperaba weak_G2 en weaknesses_detected")
+    print("[OK] weak_G2 detectada correctamente\n")
+
+
 def test_predict_multi_candidate():
     if not os.path.exists(DATASET_PATH):
         print("[multi] Dataset not found, skipping multi-weakness candidate")
@@ -210,6 +230,7 @@ def main():
         test_health()
         test_root()
         test_predict_no_weaknesses()
+        test_predict_G2_weakness()
         test_predict_multi_candidate()
         test_dataset_sweep()
 
