@@ -6,7 +6,7 @@ Servicio FastAPI para ser consumido por el backend NestJS
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, root_validator
 from typing import List, Dict, Optional
 import joblib
 import numpy as np
@@ -183,6 +183,33 @@ class VocalMetrics(BaseModel):
         ge=0,
         le=60
     )
+
+    @root_validator(pre=True)
+    def clamp_numeric_fields(cls, values):
+        clamp_rules = {
+            'meanRmsDb':          (-60.0,  0.0),
+            'rmsConsistency':     (  0.0, None),
+            'dynamicRangeDb':     (  0.0, 120.0),
+            'durationSec':        (  0.0,  10.0),
+            'attackLatencyMs':    (  0.0, 500.0),
+            'precisionCents':     (  0.0, 600.0),
+            'stabilityCents':     (  0.0, 200.0),
+            'rangeMinMidi':       ( 20.0, 108.0),
+            'rangeMaxMidi':       ( 20.0, 108.0),
+            'rangeSpanSemitones': (  0.0,  60.0),
+        }
+        for field, (min_val, max_val) in clamp_rules.items():
+            if field in values and isinstance(values[field], (int, float)):
+                original = float(values[field])
+                clamped = original
+                if min_val is not None:
+                    clamped = max(clamped, min_val)
+                if max_val is not None:
+                    clamped = min(clamped, max_val)
+                if clamped != original:
+                    logger.warning(f"Campo '{field}' fuera de rango ({original}), ajustado a {clamped}")
+                values[field] = clamped
+        return values
 
     @validator('gender')
     def validate_gender(cls, v):
