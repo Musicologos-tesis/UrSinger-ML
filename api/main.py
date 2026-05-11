@@ -66,7 +66,7 @@ GROUP_THRESHOLDS = {
 # Reglas físicas de respaldo: valores tan extremos que son carencia independientemente del modelo
 PHYSICAL_WEAKNESS_RULES = {
     "weak_G1": lambda m: m.durationSec < 1.2,
-    "weak_G2": lambda m: m.precisionCents > 100,
+    "weak_G2": lambda m: m.precisionCents > 50,
     "weak_G3": lambda m: m.stabilityCents > 50,
     "weak_G4": lambda m: m.dynamicRangeDb < 10.0,
     "weak_G5": lambda m: m.rangeSpanSemitones < 6,
