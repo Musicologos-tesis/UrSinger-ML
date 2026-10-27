@@ -1,0 +1,51 @@
+{
+  "dataset_path": "data/training_data_augmented.csv",
+  "group_definition": "group_id (fallback singer_id)",
+  "audit": [
+    {
+      "fold": 1,
+      "train_group_count": 17,
+      "test_group_count": 3,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 35,
+      "status": "Leak"
+    },
+    {
+      "fold": 2,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 30,
+      "status": "Leak"
+    },
+    {
+      "fold": 3,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 30,
+      "status": "Leak"
+    },
+    {
+      "fold": 4,
+      "train_group_count": 15,
+      "test_group_count": 5,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 25,
+      "status": "Leak"
+    },
+    {
+      "fold": 5,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 25,
+      "status": "Leak"
+    }
+  ]
+}

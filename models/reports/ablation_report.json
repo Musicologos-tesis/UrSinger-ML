@@ -1,0 +1,3506 @@
+{
+  "timestamp": "2026-10-27T10:19:26.449370",
+  "dataset_path": "data/training_data_augmented.csv",
+  "evaluation_protocol": "GroupKFold by group_id/singer_id with identical folds across all scenarios",
+  "targets": [
+    "weak_G1",
+    "weak_G2",
+    "weak_G3",
+    "weak_G4",
+    "weak_G5"
+  ],
+  "scenarios": {
+    "xgboost_with_synthetic_with_gender": [
+      {
+        "fold": 1,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.7142857142857143,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.7142857142857143,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.7142857142857143,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.94,
+              "precision": 0.75,
+              "recall": 0.8571428571428571,
+              "f1_score": 0.8,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 1,
+              "false_positives": 2,
+              "true_positives": 6,
+              "true_negatives": 41,
+              "confusion_matrix": [
+                [
+                  41,
+                  2
+                ],
+                [
+                  1,
+                  6
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.94,
+              "precision": 0.7,
+              "recall": 1.0,
+              "f1_score": 0.8235294117647058,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 0,
+              "false_positives": 3,
+              "true_positives": 7,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  3
+                ],
+                [
+                  0,
+                  7
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.8235294117647058,
+            "macro_f1": 0.8247058823529411,
+            "micro_precision": 0.8484848484848485,
+            "macro_precision": 0.89,
+            "micro_recall": 0.8,
+            "macro_recall": 0.8,
+            "hamming_loss": 0.048,
+            "subset_accuracy": 0.78,
+            "label_wise_accuracy_mean": 0.952
+          },
+          "aggregated_label_accuracy": 0.952,
+          "average": {
+            "accuracy": 0.952,
+            "f1_score": 0.8247058823529411,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 2,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.86,
+              "precision": 0.46153846153846156,
+              "recall": 1.0,
+              "f1_score": 0.631578947368421,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 7,
+              "true_positives": 6,
+              "true_negatives": 37,
+              "confusion_matrix": [
+                [
+                  37,
+                  7
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1_score": 0.8,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  2,
+                  4
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.94,
+              "precision": 0.6666666666666666,
+              "recall": 1.0,
+              "f1_score": 0.8,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 3,
+              "true_positives": 6,
+              "true_negatives": 41,
+              "confusion_matrix": [
+                [
+                  41,
+                  3
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1_score": 0.8,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  2,
+                  4
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.98,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "f1_score": 0.9090909090909091,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  1,
+                  5
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.7692307692307693,
+            "macro_f1": 0.788133971291866,
+            "micro_precision": 0.7142857142857143,
+            "macro_precision": 0.8256410256410256,
+            "micro_recall": 0.8333333333333334,
+            "macro_recall": 0.8333333333333333,
+            "hamming_loss": 0.06,
+            "subset_accuracy": 0.72,
+            "label_wise_accuracy_mean": 0.9399999999999998
+          },
+          "aggregated_label_accuracy": 0.94,
+          "average": {
+            "accuracy": 0.9399999999999998,
+            "f1_score": 0.788133971291866,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 3,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.98,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "f1_score": 0.9230769230769231,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 1,
+              "true_positives": 6,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  1
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 0.75,
+              "recall": 1.0,
+              "f1_score": 0.8571428571428571,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 2,
+              "true_positives": 6,
+              "true_negatives": 42,
+              "confusion_matrix": [
+                [
+                  42,
+                  2
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 6,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 6,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.94,
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1_score": 0.6666666666666666,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 3,
+              "false_positives": 0,
+              "true_positives": 3,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  3,
+                  3
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.9,
+            "macro_f1": 0.8893772893772894,
+            "micro_precision": 0.9,
+            "macro_precision": 0.9214285714285715,
+            "micro_recall": 0.9,
+            "macro_recall": 0.9,
+            "hamming_loss": 0.024,
+            "subset_accuracy": 0.9,
+            "label_wise_accuracy_mean": 0.976
+          },
+          "aggregated_label_accuracy": 0.976,
+          "average": {
+            "accuracy": 0.976,
+            "f1_score": 0.8893772893772894,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 4,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.94,
+              "precision": 1.0,
+              "recall": 0.4,
+              "f1_score": 0.5714285714285714,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 3,
+              "false_positives": 0,
+              "true_positives": 2,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  3,
+                  2
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.96,
+              "precision": 0.7142857142857143,
+              "recall": 1.0,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 0,
+              "false_positives": 2,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  2
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.98,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1_score": 0.8888888888888888,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  1,
+                  4
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.875,
+            "macro_f1": 0.8587301587301587,
+            "micro_precision": 0.9130434782608695,
+            "macro_precision": 0.9428571428571428,
+            "micro_recall": 0.84,
+            "macro_recall": 0.8400000000000001,
+            "hamming_loss": 0.024,
+            "subset_accuracy": 0.88,
+            "label_wise_accuracy_mean": 0.976
+          },
+          "aggregated_label_accuracy": 0.976,
+          "average": {
+            "accuracy": 0.976,
+            "f1_score": 0.8587301587301587,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 5,
+        "num_train": 200,
+        "num_test": 45,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.9555555555555556,
+              "precision": 0.7142857142857143,
+              "recall": 1.0,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 2,
+              "true_positives": 5,
+              "true_negatives": 38,
+              "confusion_matrix": [
+                [
+                  38,
+                  2
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.9777777777777777,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1_score": 0.8888888888888888,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  1,
+                  4
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.8,
+              "precision": 0.35714285714285715,
+              "recall": 1.0,
+              "f1_score": 0.5263157894736842,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 9,
+              "true_positives": 5,
+              "true_negatives": 31,
+              "confusion_matrix": [
+                [
+                  31,
+                  9
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.8,
+            "macro_f1": 0.8497076023391813,
+            "micro_precision": 0.6857142857142857,
+            "macro_precision": 0.8142857142857143,
+            "micro_recall": 0.96,
+            "macro_recall": 0.96,
+            "hamming_loss": 0.05333333333333334,
+            "subset_accuracy": 0.7555555555555555,
+            "label_wise_accuracy_mean": 0.9466666666666667
+          },
+          "aggregated_label_accuracy": 0.9466666666666667,
+          "average": {
+            "accuracy": 0.9466666666666667,
+            "f1_score": 0.8497076023391813,
+            "pr_auc": null
+          }
+        }
+      }
+    ],
+    "xgboost_without_synthetic_with_gender": [
+      {
+        "fold": 1,
+        "num_train": 85,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.14,
+            "subset_accuracy": 0.3,
+            "label_wise_accuracy_mean": 0.86
+          },
+          "aggregated_label_accuracy": 0.86,
+          "average": {
+            "accuracy": 0.86,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 2,
+        "num_train": 80,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.12,
+            "subset_accuracy": 0.4,
+            "label_wise_accuracy_mean": 0.8800000000000001
+          },
+          "aggregated_label_accuracy": 0.88,
+          "average": {
+            "accuracy": 0.8800000000000001,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 3,
+        "num_train": 80,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.12,
+            "subset_accuracy": 0.4,
+            "label_wise_accuracy_mean": 0.8800000000000001
+          },
+          "aggregated_label_accuracy": 0.88,
+          "average": {
+            "accuracy": 0.8800000000000001,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 4,
+        "num_train": 75,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.1,
+            "subset_accuracy": 0.5,
+            "label_wise_accuracy_mean": 0.9
+          },
+          "aggregated_label_accuracy": 0.9,
+          "average": {
+            "accuracy": 0.9,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 5,
+        "num_train": 80,
+        "num_test": 45,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.1111111111111111,
+            "subset_accuracy": 0.4444444444444444,
+            "label_wise_accuracy_mean": 0.888888888888889
+          },
+          "aggregated_label_accuracy": 0.8888888888888888,
+          "average": {
+            "accuracy": 0.888888888888889,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      }
+    ],
+    "xgboost_with_synthetic_without_gender": [
+      {
+        "fold": 1,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.7142857142857143,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.7142857142857143,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.7142857142857143,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.94,
+              "precision": 0.75,
+              "recall": 0.8571428571428571,
+              "f1_score": 0.8,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 1,
+              "false_positives": 2,
+              "true_positives": 6,
+              "true_negatives": 41,
+              "confusion_matrix": [
+                [
+                  41,
+                  2
+                ],
+                [
+                  1,
+                  6
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.94,
+              "precision": 0.7,
+              "recall": 1.0,
+              "f1_score": 0.8235294117647058,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 0,
+              "false_positives": 3,
+              "true_positives": 7,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  3
+                ],
+                [
+                  0,
+                  7
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.8235294117647058,
+            "macro_f1": 0.8247058823529411,
+            "micro_precision": 0.8484848484848485,
+            "macro_precision": 0.89,
+            "micro_recall": 0.8,
+            "macro_recall": 0.8,
+            "hamming_loss": 0.048,
+            "subset_accuracy": 0.78,
+            "label_wise_accuracy_mean": 0.952
+          },
+          "aggregated_label_accuracy": 0.952,
+          "average": {
+            "accuracy": 0.952,
+            "f1_score": 0.8247058823529411,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 2,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.86,
+              "precision": 0.46153846153846156,
+              "recall": 1.0,
+              "f1_score": 0.631578947368421,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 7,
+              "true_positives": 6,
+              "true_negatives": 37,
+              "confusion_matrix": [
+                [
+                  37,
+                  7
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1_score": 0.8,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  2,
+                  4
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.94,
+              "precision": 0.6666666666666666,
+              "recall": 1.0,
+              "f1_score": 0.8,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 3,
+              "true_positives": 6,
+              "true_negatives": 41,
+              "confusion_matrix": [
+                [
+                  41,
+                  3
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1_score": 0.8,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  2,
+                  4
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.98,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "f1_score": 0.9090909090909091,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  1,
+                  5
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.7692307692307693,
+            "macro_f1": 0.788133971291866,
+            "micro_precision": 0.7142857142857143,
+            "macro_precision": 0.8256410256410256,
+            "micro_recall": 0.8333333333333334,
+            "macro_recall": 0.8333333333333333,
+            "hamming_loss": 0.06,
+            "subset_accuracy": 0.72,
+            "label_wise_accuracy_mean": 0.9399999999999998
+          },
+          "aggregated_label_accuracy": 0.94,
+          "average": {
+            "accuracy": 0.9399999999999998,
+            "f1_score": 0.788133971291866,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 3,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.98,
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "f1_score": 0.9230769230769231,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 1,
+              "true_positives": 6,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  1
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 0.75,
+              "recall": 1.0,
+              "f1_score": 0.8571428571428571,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 2,
+              "true_positives": 6,
+              "true_negatives": 42,
+              "confusion_matrix": [
+                [
+                  42,
+                  2
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 6,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 6,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  0,
+                  6
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.94,
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1_score": 0.6666666666666666,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 3,
+              "false_positives": 0,
+              "true_positives": 3,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  3,
+                  3
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.9,
+            "macro_f1": 0.8893772893772894,
+            "micro_precision": 0.9,
+            "macro_precision": 0.9214285714285715,
+            "micro_recall": 0.9,
+            "macro_recall": 0.9,
+            "hamming_loss": 0.024,
+            "subset_accuracy": 0.9,
+            "label_wise_accuracy_mean": 0.976
+          },
+          "aggregated_label_accuracy": 0.976,
+          "average": {
+            "accuracy": 0.976,
+            "f1_score": 0.8893772893772894,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 4,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.94,
+              "precision": 1.0,
+              "recall": 0.4,
+              "f1_score": 0.5714285714285714,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 3,
+              "false_positives": 0,
+              "true_positives": 2,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  3,
+                  2
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.96,
+              "precision": 0.7142857142857143,
+              "recall": 1.0,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 0,
+              "false_positives": 2,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  2
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.98,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1_score": 0.8888888888888888,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  1,
+                  4
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.875,
+            "macro_f1": 0.8587301587301587,
+            "micro_precision": 0.9130434782608695,
+            "macro_precision": 0.9428571428571428,
+            "micro_recall": 0.84,
+            "macro_recall": 0.8400000000000001,
+            "hamming_loss": 0.024,
+            "subset_accuracy": 0.88,
+            "label_wise_accuracy_mean": 0.976
+          },
+          "aggregated_label_accuracy": 0.976,
+          "average": {
+            "accuracy": 0.976,
+            "f1_score": 0.8587301587301587,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 5,
+        "num_train": 200,
+        "num_test": 45,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.9555555555555556,
+              "precision": 0.7142857142857143,
+              "recall": 1.0,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 2,
+              "true_positives": 5,
+              "true_negatives": 38,
+              "confusion_matrix": [
+                [
+                  38,
+                  2
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.9777777777777777,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1_score": 0.8888888888888888,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  1,
+                  4
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1_score": 1.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.8,
+              "precision": 0.35714285714285715,
+              "recall": 1.0,
+              "f1_score": 0.5263157894736842,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 0,
+              "false_positives": 9,
+              "true_positives": 5,
+              "true_negatives": 31,
+              "confusion_matrix": [
+                [
+                  31,
+                  9
+                ],
+                [
+                  0,
+                  5
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.8,
+            "macro_f1": 0.8497076023391813,
+            "micro_precision": 0.6857142857142857,
+            "macro_precision": 0.8142857142857143,
+            "micro_recall": 0.96,
+            "macro_recall": 0.96,
+            "hamming_loss": 0.05333333333333334,
+            "subset_accuracy": 0.7555555555555555,
+            "label_wise_accuracy_mean": 0.9466666666666667
+          },
+          "aggregated_label_accuracy": 0.9466666666666667,
+          "average": {
+            "accuracy": 0.9466666666666667,
+            "f1_score": 0.8497076023391813,
+            "pr_auc": null
+          }
+        }
+      }
+    ],
+    "xgboost_without_synthetic_without_gender": [
+      {
+        "fold": 1,
+        "num_train": 85,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.14,
+            "subset_accuracy": 0.3,
+            "label_wise_accuracy_mean": 0.86
+          },
+          "aggregated_label_accuracy": 0.86,
+          "average": {
+            "accuracy": 0.86,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 2,
+        "num_train": 80,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.12,
+            "subset_accuracy": 0.4,
+            "label_wise_accuracy_mean": 0.8800000000000001
+          },
+          "aggregated_label_accuracy": 0.88,
+          "average": {
+            "accuracy": 0.8800000000000001,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 3,
+        "num_train": 80,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.12,
+            "subset_accuracy": 0.4,
+            "label_wise_accuracy_mean": 0.8800000000000001
+          },
+          "aggregated_label_accuracy": 0.88,
+          "average": {
+            "accuracy": 0.8800000000000001,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 4,
+        "num_train": 75,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.1,
+            "subset_accuracy": 0.5,
+            "label_wise_accuracy_mean": 0.9
+          },
+          "aggregated_label_accuracy": 0.9,
+          "average": {
+            "accuracy": 0.9,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 5,
+        "num_train": 80,
+        "num_test": 45,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.0,
+            "macro_f1": 0.0,
+            "micro_precision": 0.0,
+            "macro_precision": 0.0,
+            "micro_recall": 0.0,
+            "macro_recall": 0.0,
+            "hamming_loss": 0.1111111111111111,
+            "subset_accuracy": 0.4444444444444444,
+            "label_wise_accuracy_mean": 0.888888888888889
+          },
+          "aggregated_label_accuracy": 0.8888888888888888,
+          "average": {
+            "accuracy": 0.888888888888889,
+            "f1_score": 0.0,
+            "pr_auc": null
+          }
+        }
+      }
+    ],
+    "rule_threshold_baseline": [
+      {
+        "fold": 1,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.92,
+              "precision": 1.0,
+              "recall": 0.42857142857142855,
+              "f1_score": 0.6,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 4,
+              "false_positives": 0,
+              "true_positives": 3,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  4,
+                  3
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.86,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 7,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  7,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.88,
+              "precision": 1.0,
+              "recall": 0.14285714285714285,
+              "f1_score": 0.25,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 1,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  6,
+                  1
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.7142857142857143,
+              "f1_score": 0.8333333333333334,
+              "support_positive": 7,
+              "support_negative": 43,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 5,
+              "true_negatives": 43,
+              "confusion_matrix": [
+                [
+                  43,
+                  0
+                ],
+                [
+                  2,
+                  5
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.4090909090909091,
+            "macro_f1": 0.33666666666666667,
+            "micro_precision": 1.0,
+            "macro_precision": 0.6,
+            "micro_recall": 0.2571428571428571,
+            "macro_recall": 0.2571428571428571,
+            "hamming_loss": 0.104,
+            "subset_accuracy": 0.48,
+            "label_wise_accuracy_mean": 0.8960000000000001
+          },
+          "aggregated_label_accuracy": 0.896,
+          "average": {
+            "accuracy": 0.8960000000000001,
+            "f1_score": 0.33666666666666667,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 2,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.92,
+              "precision": 1.0,
+              "recall": 0.3333333333333333,
+              "f1_score": 0.5,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 4,
+              "false_positives": 0,
+              "true_positives": 2,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  4,
+                  2
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.92,
+              "precision": 1.0,
+              "recall": 0.3333333333333333,
+              "f1_score": 0.5,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 4,
+              "false_positives": 0,
+              "true_positives": 2,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  4,
+                  2
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.9,
+              "precision": 1.0,
+              "recall": 0.16666666666666666,
+              "f1_score": 0.2857142857142857,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 1,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  5,
+                  1
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.94,
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1_score": 0.6666666666666666,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 3,
+              "false_positives": 0,
+              "true_positives": 3,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  3,
+                  3
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.42105263157894735,
+            "macro_f1": 0.3904761904761904,
+            "micro_precision": 1.0,
+            "macro_precision": 0.8,
+            "micro_recall": 0.26666666666666666,
+            "macro_recall": 0.26666666666666666,
+            "hamming_loss": 0.088,
+            "subset_accuracy": 0.56,
+            "label_wise_accuracy_mean": 0.9120000000000001
+          },
+          "aggregated_label_accuracy": 0.912,
+          "average": {
+            "accuracy": 0.9120000000000001,
+            "f1_score": 0.3904761904761904,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 3,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.92,
+              "precision": 1.0,
+              "recall": 0.3333333333333333,
+              "f1_score": 0.5,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 4,
+              "false_positives": 0,
+              "true_positives": 2,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  4,
+                  2
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1_score": 0.8,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  2,
+                  4
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.88,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 6,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.9,
+              "precision": 1.0,
+              "recall": 0.16666666666666666,
+              "f1_score": 0.2857142857142857,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 1,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  5,
+                  1
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.92,
+              "precision": 1.0,
+              "recall": 0.3333333333333333,
+              "f1_score": 0.5,
+              "support_positive": 6,
+              "support_negative": 44,
+              "false_negatives": 4,
+              "false_positives": 0,
+              "true_positives": 2,
+              "true_negatives": 44,
+              "confusion_matrix": [
+                [
+                  44,
+                  0
+                ],
+                [
+                  4,
+                  2
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.46153846153846156,
+            "macro_f1": 0.41714285714285715,
+            "micro_precision": 1.0,
+            "macro_precision": 0.8,
+            "micro_recall": 0.3,
+            "macro_recall": 0.3,
+            "hamming_loss": 0.084,
+            "subset_accuracy": 0.58,
+            "label_wise_accuracy_mean": 0.916
+          },
+          "aggregated_label_accuracy": 0.916,
+          "average": {
+            "accuracy": 0.916,
+            "f1_score": 0.41714285714285715,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 4,
+        "num_train": 195,
+        "num_test": 50,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.94,
+              "precision": 1.0,
+              "recall": 0.4,
+              "f1_score": 0.5714285714285714,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 3,
+              "false_positives": 0,
+              "true_positives": 2,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  3,
+                  2
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.6,
+              "f1_score": 0.75,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 3,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.9,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.96,
+              "precision": 1.0,
+              "recall": 0.6,
+              "f1_score": 0.75,
+              "support_positive": 5,
+              "support_negative": 45,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 3,
+              "true_negatives": 45,
+              "confusion_matrix": [
+                [
+                  45,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.48484848484848486,
+            "macro_f1": 0.41428571428571426,
+            "micro_precision": 1.0,
+            "macro_precision": 0.6,
+            "micro_recall": 0.32,
+            "macro_recall": 0.32,
+            "hamming_loss": 0.068,
+            "subset_accuracy": 0.66,
+            "label_wise_accuracy_mean": 0.932
+          },
+          "aggregated_label_accuracy": 0.932,
+          "average": {
+            "accuracy": 0.932,
+            "f1_score": 0.41428571428571426,
+            "pr_auc": null
+          }
+        }
+      },
+      {
+        "fold": 5,
+        "num_train": 200,
+        "num_test": 45,
+        "metrics": {
+          "per_target": {
+            "weak_G1": {
+              "accuracy": 0.9777777777777777,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1_score": 0.8888888888888888,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  1,
+                  4
+                ]
+              ]
+            },
+            "weak_G2": {
+              "accuracy": 0.9555555555555556,
+              "precision": 1.0,
+              "recall": 0.6,
+              "f1_score": 0.75,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 2,
+              "false_positives": 0,
+              "true_positives": 3,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  2,
+                  3
+                ]
+              ]
+            },
+            "weak_G3": {
+              "accuracy": 0.8888888888888888,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 5,
+              "false_positives": 0,
+              "true_positives": 0,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  5,
+                  0
+                ]
+              ]
+            },
+            "weak_G4": {
+              "accuracy": 0.9111111111111111,
+              "precision": 1.0,
+              "recall": 0.2,
+              "f1_score": 0.3333333333333333,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 4,
+              "false_positives": 0,
+              "true_positives": 1,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  4,
+                  1
+                ]
+              ]
+            },
+            "weak_G5": {
+              "accuracy": 0.9777777777777777,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1_score": 0.8888888888888888,
+              "support_positive": 5,
+              "support_negative": 40,
+              "false_negatives": 1,
+              "false_positives": 0,
+              "true_positives": 4,
+              "true_negatives": 40,
+              "confusion_matrix": [
+                [
+                  40,
+                  0
+                ],
+                [
+                  1,
+                  4
+                ]
+              ]
+            }
+          },
+          "multilabel": {
+            "micro_f1": 0.6486486486486487,
+            "macro_f1": 0.5722222222222222,
+            "micro_precision": 1.0,
+            "macro_precision": 0.8,
+            "micro_recall": 0.48,
+            "macro_recall": 0.48,
+            "hamming_loss": 0.057777777777777775,
+            "subset_accuracy": 0.7111111111111111,
+            "label_wise_accuracy_mean": 0.9422222222222221
+          },
+          "aggregated_label_accuracy": 0.9422222222222222,
+          "average": {
+            "accuracy": 0.9422222222222221,
+            "f1_score": 0.5722222222222222,
+            "pr_auc": null
+          }
+        }
+      }
+    ]
+  },
+  "summary": {
+    "xgboost_with_synthetic_with_gender": {
+      "avg_accuracy": 0.9581333333333333,
+      "std_accuracy": 0.016854936632597888,
+      "ci95_halfwidth_accuracy": 0.014774003354240586,
+      "avg_f1_score": 0.8421309808182873,
+      "std_f1_score": 0.038027827533914926,
+      "ci95_halfwidth_f1_score": 0.03333286050176901,
+      "aggregated_label_accuracy": 0.9581333333333333,
+      "multilabel_avg": {
+        "micro_f1": 0.833552036199095,
+        "macro_f1": 0.8421309808182873,
+        "hamming_loss": 0.04186666666666667,
+        "subset_accuracy": 0.8071111111111111
+      },
+      "num_folds": 5
+    },
+    "xgboost_without_synthetic_with_gender": {
+      "avg_accuracy": 0.8817777777777778,
+      "std_accuracy": 0.014690216783145266,
+      "ci95_halfwidth_accuracy": 0.012876542745877871,
+      "avg_f1_score": 0.0,
+      "std_f1_score": 0.0,
+      "ci95_halfwidth_f1_score": 0.0,
+      "aggregated_label_accuracy": 0.8817777777777778,
+      "multilabel_avg": {
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "hamming_loss": 0.11822222222222223,
+        "subset_accuracy": 0.40888888888888886
+      },
+      "num_folds": 5
+    },
+    "xgboost_with_synthetic_without_gender": {
+      "avg_accuracy": 0.9581333333333333,
+      "std_accuracy": 0.016854936632597888,
+      "ci95_halfwidth_accuracy": 0.014774003354240586,
+      "avg_f1_score": 0.8421309808182873,
+      "std_f1_score": 0.038027827533914926,
+      "ci95_halfwidth_f1_score": 0.03333286050176901,
+      "aggregated_label_accuracy": 0.9581333333333333,
+      "multilabel_avg": {
+        "micro_f1": 0.833552036199095,
+        "macro_f1": 0.8421309808182873,
+        "hamming_loss": 0.04186666666666667,
+        "subset_accuracy": 0.8071111111111111
+      },
+      "num_folds": 5
+    },
+    "xgboost_without_synthetic_without_gender": {
+      "avg_accuracy": 0.8817777777777778,
+      "std_accuracy": 0.014690216783145266,
+      "ci95_halfwidth_accuracy": 0.012876542745877871,
+      "avg_f1_score": 0.0,
+      "std_f1_score": 0.0,
+      "ci95_halfwidth_f1_score": 0.0,
+      "aggregated_label_accuracy": 0.8817777777777778,
+      "multilabel_avg": {
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "hamming_loss": 0.11822222222222223,
+        "subset_accuracy": 0.40888888888888886
+      },
+      "num_folds": 5
+    },
+    "rule_threshold_baseline": {
+      "avg_accuracy": 0.9196444444444445,
+      "std_accuracy": 0.01798051071110315,
+      "ci95_halfwidth_accuracy": 0.01576061253431437,
+      "avg_f1_score": 0.4261587301587301,
+      "std_f1_score": 0.08780499879307069,
+      "ci95_halfwidth_f1_score": 0.07696447485771246,
+      "aggregated_label_accuracy": 0.9196444444444445,
+      "multilabel_avg": {
+        "micro_f1": 0.48503582714109034,
+        "macro_f1": 0.4261587301587301,
+        "hamming_loss": 0.08035555555555556,
+        "subset_accuracy": 0.5982222222222223
+      },
+      "num_folds": 5
+    }
+  }
+}

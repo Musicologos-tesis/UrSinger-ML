@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-10-27T08:51:36.326258",
+  "dataset_path": "data/training_data_with_skill_groups.csv",
+  "cv_splits": 5,
+  "group_definition": "group_id (fallback singer_id)",
+  "audit": [
+    {
+      "fold": 1,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 0,
+      "status": "OK"
+    },
+    {
+      "fold": 2,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 0,
+      "status": "OK"
+    },
+    {
+      "fold": 3,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 0,
+      "status": "OK"
+    },
+    {
+      "fold": 4,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 0,
+      "status": "OK"
+    },
+    {
+      "fold": 5,
+      "train_group_count": 16,
+      "test_group_count": 4,
+      "group_intersection_count": 0,
+      "group_intersection": [],
+      "test_augmented_rows": 0,
+      "status": "OK"
+    }
+  ]
+}

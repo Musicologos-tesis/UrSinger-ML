@@ -58,7 +58,15 @@ def _get_avg_accuracy():
     report = _load_json(Path('models/reports/evaluation_report.json'))
     if not report:
         return None
-    accuracies = [report[g].get('accuracy') for g in report.keys()]
+
+    # Support both legacy schema {target: metrics} and extended schema
+    # {per_target: {target: metrics}, ...}
+    if 'per_target' in report and isinstance(report['per_target'], dict):
+        target_metrics = report['per_target']
+    else:
+        target_metrics = report
+
+    accuracies = [target_metrics[g].get('accuracy') for g in target_metrics.keys()]
     accuracies = [a for a in accuracies if a is not None]
     if not accuracies:
         return None
@@ -215,6 +223,9 @@ def create_results_chart():
     with open('models/reports/evaluation_report.json', 'r') as f:
         results = json.load(f)
 
+    if 'per_target' in results and isinstance(results['per_target'], dict):
+        results = results['per_target']
+
     groups = list(results.keys())
     accuracies = [results[g]['accuracy'] * 100 for g in groups]
     f1_scores = [results[g]['f1_score'] * 100 for g in groups]
@@ -317,6 +328,9 @@ def create_confusion_matrices():
     """Crea matrices de confusión para cada grupo"""
     with open('models/reports/evaluation_report.json', 'r') as f:
         results = json.load(f)
+
+    if 'per_target' in results and isinstance(results['per_target'], dict):
+        results = results['per_target']
 
     fig, axes = plt.subplots(2, 3, figsize=(16, 10))
     axes = axes.flatten()
