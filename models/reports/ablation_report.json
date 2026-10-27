@@ -1,7 +1,8 @@
 {
-  "timestamp": "2026-10-27T10:19:26.449370",
+  "timestamp": "2026-10-27T12:18:24.200867",
   "dataset_path": "data/training_data_augmented.csv",
-  "evaluation_protocol": "GroupKFold by group_id/singer_id with identical folds across all scenarios",
+  "evaluation_protocol": "Controlled ablation on augmented/synthetic development benchmark using identical GroupKFold partitions by group_id/singer_id across scenarios",
+  "test_set_transparency_note": "Because ablation is run on the augmented benchmark, test folds may contain synthetic rows depending on fold composition.",
   "targets": [
     "weak_G1",
     "weak_G2",
@@ -15,6 +16,11 @@
         "fold": 1,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 15,
+          "synthetic_rows": 35,
+          "synthetic_ratio": 0.7
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -151,6 +157,11 @@
         "fold": 2,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -287,6 +298,11 @@
         "fold": 3,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -423,6 +439,11 @@
         "fold": 4,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 25,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -559,6 +580,11 @@
         "fold": 5,
         "num_train": 200,
         "num_test": 45,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5555555555555556
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -697,6 +723,11 @@
         "fold": 1,
         "num_train": 85,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 15,
+          "synthetic_rows": 35,
+          "synthetic_ratio": 0.7
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -833,6 +864,11 @@
         "fold": 2,
         "num_train": 80,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -969,6 +1005,11 @@
         "fold": 3,
         "num_train": 80,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -1105,6 +1146,11 @@
         "fold": 4,
         "num_train": 75,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 25,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -1241,6 +1287,11 @@
         "fold": 5,
         "num_train": 80,
         "num_test": 45,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5555555555555556
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -1379,6 +1430,11 @@
         "fold": 1,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 15,
+          "synthetic_rows": 35,
+          "synthetic_ratio": 0.7
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -1515,6 +1571,11 @@
         "fold": 2,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -1651,6 +1712,11 @@
         "fold": 3,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -1787,6 +1853,11 @@
         "fold": 4,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 25,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -1923,6 +1994,11 @@
         "fold": 5,
         "num_train": 200,
         "num_test": 45,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5555555555555556
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -2061,6 +2137,11 @@
         "fold": 1,
         "num_train": 85,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 15,
+          "synthetic_rows": 35,
+          "synthetic_ratio": 0.7
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -2197,6 +2278,11 @@
         "fold": 2,
         "num_train": 80,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -2333,6 +2419,11 @@
         "fold": 3,
         "num_train": 80,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -2469,6 +2560,11 @@
         "fold": 4,
         "num_train": 75,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 25,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -2605,6 +2701,11 @@
         "fold": 5,
         "num_train": 80,
         "num_test": 45,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5555555555555556
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -2738,11 +2839,16 @@
         }
       }
     ],
-    "rule_threshold_baseline": [
+    "heuristic_rule_threshold_baseline": [
       {
         "fold": 1,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 15,
+          "synthetic_rows": 35,
+          "synthetic_ratio": 0.7
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -2879,6 +2985,11 @@
         "fold": 2,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -3015,6 +3126,11 @@
         "fold": 3,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 30,
+          "synthetic_ratio": 0.6
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -3151,6 +3267,11 @@
         "fold": 4,
         "num_train": 195,
         "num_test": 50,
+        "test_source_composition": {
+          "original_rows": 25,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -3287,6 +3408,11 @@
         "fold": 5,
         "num_train": 200,
         "num_test": 45,
+        "test_source_composition": {
+          "original_rows": 20,
+          "synthetic_rows": 25,
+          "synthetic_ratio": 0.5555555555555556
+        },
         "metrics": {
           "per_target": {
             "weak_G1": {
@@ -3486,7 +3612,7 @@
       },
       "num_folds": 5
     },
-    "rule_threshold_baseline": {
+    "heuristic_rule_threshold_baseline": {
       "avg_accuracy": 0.9196444444444445,
       "std_accuracy": 0.01798051071110315,
       "ci95_halfwidth_accuracy": 0.01576061253431437,

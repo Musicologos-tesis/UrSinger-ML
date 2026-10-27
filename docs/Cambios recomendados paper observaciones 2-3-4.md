@@ -37,7 +37,7 @@ El abstract reporta metricas globales altas (94.1% accuracy, 77.9% F1, 88.7% PR-
 Agregar una frase breve de transparencia metodologica al final del bloque de resultados analiticos.
 
 ### Texto sugerido (ingles, listo para pegar)
-These cross-validation values correspond to the historical augmented benchmark used for model-comparison during development. Under leakage-free ablation with identical singer-group folds, performance remained strongly dependent on synthetic augmentation, while removing gender did not materially change aggregate metrics in this dataset.
+These cross-validation values correspond to the historical augmented benchmark used for model-comparison during development. In an additional controlled ablation on the same augmented benchmark (with identical singer-group folds across scenarios), performance remained strongly dependent on synthetic augmentation, while removing gender did not materially change aggregate metrics in this dataset.
 
 ## 3.2 Section 3.5 Experimental Protocol and Baselines
 
@@ -46,10 +46,10 @@ La seccion describe GroupKFold y baselines clasicos, pero no deja explicito el n
 
 ### Cambios recomendados
 1. Agregar un parrafo que describa el estudio de ablacion con cinco escenarios comparables.
-2. Incluir el baseline simple por reglas/umbrales como referencia interpretable.
+2. Incluir el heuristic rule-threshold baseline como referencia interpretable.
 
 ### Texto sugerido (ingles, listo para pegar)
-In response to reviewer feedback, we added a controlled ablation protocol evaluated under identical GroupKFold partitions by singer/group across all scenarios. We compared: (i) XGBoost with synthetic augmentation and gender, (ii) XGBoost without synthetic augmentation and with gender, (iii) XGBoost with synthetic augmentation and without gender, (iv) XGBoost without synthetic augmentation and without gender, and (v) a simple rule-threshold baseline. The rule-threshold baseline uses fixed acoustic cutoffs aligned with the five pedagogical dimensions and is included as an interpretable non-ML reference.
+In response to reviewer feedback, we added a controlled ablation protocol evaluated under identical GroupKFold partitions by singer/group across all scenarios on the augmented/synthetic development benchmark. We compared: (i) XGBoost with synthetic augmentation and gender, (ii) XGBoost without synthetic augmentation and with gender, (iii) XGBoost with synthetic augmentation and without gender, (iv) XGBoost without synthetic augmentation and without gender, and (v) a heuristic rule-threshold baseline. The heuristic rule-threshold baseline uses fixed acoustic cutoffs aligned with the five pedagogical dimensions and is included as an interpretable non-ML reference, not as a clinical/diagnostic thresholding system.
 
 ## 3.3 Section 4.1 Classification Performance (actual)
 
@@ -60,7 +60,7 @@ La seccion puede interpretarse como resultado final unico, sin marcar suficiente
 Mantener la seccion pero aclarar en el primer parrafo que corresponde al benchmark historico.
 
 ### Frase clave a insertar
-Results in this subsection correspond to the historical augmented benchmark used for model comparison and should be interpreted together with the leakage-free sensitivity and ablation analyses reported below.
+Results in this subsection correspond to the historical augmented benchmark used for model comparison and should be interpreted together with the leakage-free sensitivity analysis (Obs. 2) and the controlled ablation on the augmented benchmark (Obs. 4) reported below.
 
 ## 3.4 Nueva subseccion en Results para observacion 2
 
@@ -97,7 +97,7 @@ Under the corrected leakage-free protocol, group-based splitting was performed b
 
 ### Tabla obligatoria (agregar)
 
-Table Y. Ablation results under identical GroupKFold partitions across scenarios (5 folds).
+Table Y. Controlled ablation results on the augmented benchmark under identical GroupKFold partitions across scenarios (5 folds).
 
 | Scenario | Accuracy | F1 | Micro-F1 | Macro-F1 | Hamming loss | Subset accuracy |
 |---|---:|---:|---:|---:|---:|---:|
@@ -105,20 +105,32 @@ Table Y. Ablation results under identical GroupKFold partitions across scenarios
 | XGBoost - synthetic + gender | 0.8818 | 0.0000 | 0.0000 | 0.0000 | 0.1182 | 0.4089 |
 | XGBoost + synthetic - gender | 0.9581 | 0.8421 | 0.8336 | 0.8421 | 0.0419 | 0.8071 |
 | XGBoost - synthetic - gender | 0.8818 | 0.0000 | 0.0000 | 0.0000 | 0.1182 | 0.4089 |
-| Rule-threshold baseline | 0.9196 | 0.4262 | 0.4850 | 0.4262 | 0.0804 | 0.5982 |
+| Heuristic rule-threshold baseline | 0.9196 | 0.4262 | 0.4850 | 0.4262 | 0.0804 | 0.5982 |
+
+Optional transparency table (recommended):
+
+Table Y.1. Test composition by fold in the controlled ablation (augmented benchmark).
+
+| Fold | Original rows in test | Synthetic rows in test | Synthetic ratio |
+|---|---:|---:|---:|
+| 1 | 15 | 35 | 0.70 |
+| 2 | 20 | 30 | 0.60 |
+| 3 | 20 | 30 | 0.60 |
+| 4 | 25 | 25 | 0.50 |
+| 5 | 20 | 25 | 0.56 |
 
 ### Texto sugerido (ingles, breve)
-The ablation confirms three points under strictly comparable evaluation conditions (identical folds): (1) XGBoost with synthetic augmentation outperforms the rule-threshold baseline across multilabel metrics; (2) removing synthetic augmentation produces a substantial drop in positive-class detection (near-zero F1); and (3) removing gender does not materially change aggregate performance in this dataset.
+The controlled ablation confirms three points under strictly comparable evaluation conditions (identical folds): (1) XGBoost with synthetic augmentation outperforms the heuristic rule-threshold baseline across multilabel metrics; (2) removing synthetic augmentation produces a substantial drop in positive-class detection (near-zero F1); and (3) removing gender does not materially change aggregate performance in this dataset.
 
 ## 3.6 Section 5 Discussion
 
 ### Cambios recomendados
 Agregar un parrafo corto que conecte 2 hallazgos:
-1. Validez metodologica del protocolo leakage-free.
-2. Dependencia del desempeno respecto a augmentacion sintetica.
+1. Validez metodologica del protocolo leakage-free (Obs. 2).
+2. Dependencia del desempeno respecto a augmentacion sintetica en ablacion controlada sobre benchmark aumentado (Obs. 4).
 
 ### Texto sugerido (ingles)
-The additional leakage-free and ablation analyses strengthen methodological validity by confirming strict fold-level separation and test-set cleanliness. At the same time, they show that predictive behavior is strongly driven by synthetic augmentation, while the removal of gender did not change aggregate metrics in this dataset. These findings should be interpreted as evidence of controlled internal behavior and motivate future validation on larger expert-labeled beginner cohorts.
+The additional analyses should be interpreted in two complementary blocks: (i) a leakage-free sensitivity audit confirming strict fold-level separation and test-set cleanliness (Obs. 2), and (ii) a controlled ablation on the augmented benchmark showing strong dependence on synthetic augmentation while no aggregate change was observed after removing gender (Obs. 4). Together, these findings motivate future validation on larger expert-labeled beginner cohorts.
 
 ## 3.7 Section 6 Conclusions
 
@@ -126,7 +138,7 @@ The additional leakage-free and ablation analyses strengthen methodological vali
 Incorporar una frase final de cierre metodologico.
 
 ### Texto sugerido (ingles)
-Beyond the historical benchmark, the added leakage-free and ablation analyses provide comparable-condition evidence that clarifies the role of synthetic augmentation, confirms protocol integrity, and contextualizes the current contribution and limitations of the proposed system.
+Beyond the historical benchmark, the added analyses provide comparable-condition evidence that separately clarifies protocol integrity in leakage-free evaluation (Obs. 2) and the role of synthetic augmentation in controlled ablation on the augmented benchmark (Obs. 4), contextualizing the current contribution and limitations of the proposed system.
 
 ## 4) Cambios en tablas actuales
 

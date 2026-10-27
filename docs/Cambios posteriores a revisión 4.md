@@ -18,11 +18,12 @@ Se agrego un modo de ejecucion dedicado a comparaciones controladas:
 
 Referencias:
 - [src/ursinger_ml/models/train.py](../src/ursinger_ml/models/train.py#L560)
-- [src/ursinger_ml/models/train.py](../src/ursinger_ml/models/train.py#L1064)
+- [src/ursinger_ml/models/train.py](../src/ursinger_ml/models/train.py#L1102)
 
-### 1.2 Baseline simple de reglas/umbrales
+### 1.2 Heuristic rule-threshold baseline
 
-Se implemento un baseline interpretable usando reglas fisicas por grupo de debilidad.
+Se implemento un baseline interpretable por reglas/umbrales para comparacion controlada.
+Nota: los umbrales son referencia tecnica y no thresholds clinicos/diagnosticos.
 
 Referencias:
 - [src/ursinger_ml/models/train.py](../src/ursinger_ml/models/train.py#L83)
@@ -35,6 +36,10 @@ Todos los escenarios usan los mismos folds de GroupKFold por group_id/singer_id.
 Evidencia:
 - [models/reports/ablation_report.json](../models/reports/ablation_report.json)
 - Campo: evaluation_protocol
+
+Transparencia adicional implementada:
+- Campo: test_set_transparency_note
+- Campo por fold: test_source_composition (original_rows, synthetic_rows, synthetic_ratio)
 
 ### 1.4 Ajuste importante para dataset legacy
 
@@ -51,7 +56,7 @@ Usar exactamente estos nombres para evitar ambiguedad:
 2. xgboost_without_synthetic_with_gender
 3. xgboost_with_synthetic_without_gender
 4. xgboost_without_synthetic_without_gender
-5. rule_threshold_baseline
+5. heuristic_rule_threshold_baseline
 
 ## 3) Numeros a colocar en resultados
 
@@ -63,7 +68,7 @@ Resumen (promedio CV):
 - XGBoost - sintetico + genero: accuracy=0.8818, f1=0.0000, micro-f1=0.0000, macro-f1=0.0000, hamming=0.1182, subset=0.4089
 - XGBoost + sintetico - genero: accuracy=0.9581, f1=0.8421, micro-f1=0.8336, macro-f1=0.8421, hamming=0.0419, subset=0.8071
 - XGBoost - sintetico - genero: accuracy=0.8818, f1=0.0000, micro-f1=0.0000, macro-f1=0.0000, hamming=0.1182, subset=0.4089
-- Baseline reglas: accuracy=0.9196, f1=0.4262, micro-f1=0.4850, macro-f1=0.4262, hamming=0.0804, subset=0.5982
+- Heuristic rule-threshold baseline: accuracy=0.9196, f1=0.4262, micro-f1=0.4850, macro-f1=0.4262, hamming=0.0804, subset=0.5982
 
 ## 4) Hallazgos tecnicos que deben mantenerse en cualquier reporte
 
@@ -72,6 +77,7 @@ Resumen (promedio CV):
 Mantener siempre estas condiciones:
 - Se hizo una ablacion con cinco escenarios.
 - Se usaron particiones GroupKFold identicas en todos los escenarios para comparabilidad estricta.
+- Esta ablacion corre sobre benchmark aumentado/sintetico, por lo que test puede incluir sinteticos.
 
 ### 4.2 Metricas minimas a comunicar
 
@@ -106,3 +112,4 @@ Agregar nota de limitacion:
 2. Confirmar que se menciona comparabilidad de folds (mismo GroupKFold).
 3. Confirmar que se reporta el resultado no favorable (escenarios sin sinteticos).
 4. Confirmar que se incluye baseline simple por umbrales.
+5. Confirmar que se reporta composicion de test por fold (original/sintetico).

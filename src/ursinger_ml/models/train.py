@@ -562,7 +562,7 @@ def run_ablation_study(
     n_splits: int = CV_SPLITS,
     include_rule_baseline: bool = True,
 ):
-    """Ejecuta comparaciones/ablaciones bajo condiciones de evaluacion equivalentes."""
+    """Ejecuta ablacion controlada sobre benchmark aumentado (puede incluir sinteticos en test)."""
     df = ensure_group_id(add_source_type_if_missing(df))
     groups = df['group_id']
 
@@ -585,11 +585,18 @@ def run_ablation_study(
         'xgboost_without_synthetic_without_gender': [],
     }
     if include_rule_baseline:
-        scenarios['rule_threshold_baseline'] = []
+        scenarios['heuristic_rule_threshold_baseline'] = []
 
     for fold_idx, (train_idx, test_idx) in enumerate(gkf.split(df, df['weak_G1'], groups), start=1):
         train_df_full = df.iloc[train_idx].copy().reset_index(drop=True)
         test_df = df.iloc[test_idx].copy().reset_index(drop=True)
+        test_original_rows = int((test_df['source_type'] == 'original').sum())
+        test_synthetic_rows = int((test_df['source_type'] == 'synthetic').sum())
+        test_source_composition = {
+            'original_rows': test_original_rows,
+            'synthetic_rows': test_synthetic_rows,
+            'synthetic_ratio': float(test_synthetic_rows / max(len(test_df), 1)),
+        }
 
         train_df_no_syn = train_df_full[train_df_full['source_type'] == 'original'].copy().reset_index(drop=True)
 
@@ -611,7 +618,13 @@ def run_ablation_study(
         X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns, index=X_test.index)
         y_pred_df = _fit_predict_xgboost_per_target(X_train_scaled, y_train, X_test_scaled, target_columns)
         metrics = _compute_dataset_metrics(y_test, y_pred_df, target_columns)
-        scenarios['xgboost_with_synthetic_with_gender'].append({'fold': fold_idx, 'num_train': int(len(train_df_full)), 'num_test': int(len(test_df)), 'metrics': metrics})
+        scenarios['xgboost_with_synthetic_with_gender'].append({
+            'fold': fold_idx,
+            'num_train': int(len(train_df_full)),
+            'num_test': int(len(test_df)),
+            'test_source_composition': test_source_composition,
+            'metrics': metrics,
+        })
 
         # Escenario 2: sin sinteticos + con genero
         X_train_ns, y_train_ns, _, _ = prepare_features_and_targets(
@@ -625,7 +638,13 @@ def run_ablation_study(
         X_test_ns_scaled = pd.DataFrame(scaler_ns.transform(X_test), columns=X_test.columns, index=X_test.index)
         y_pred_ns_df = _fit_predict_xgboost_per_target(X_train_ns_scaled, y_train_ns, X_test_ns_scaled, target_columns)
         metrics_ns = _compute_dataset_metrics(y_test, y_pred_ns_df, target_columns)
-        scenarios['xgboost_without_synthetic_with_gender'].append({'fold': fold_idx, 'num_train': int(len(train_df_no_syn)), 'num_test': int(len(test_df)), 'metrics': metrics_ns})
+        scenarios['xgboost_without_synthetic_with_gender'].append({
+            'fold': fold_idx,
+            'num_train': int(len(train_df_no_syn)),
+            'num_test': int(len(test_df)),
+            'test_source_composition': test_source_composition,
+            'metrics': metrics_ns,
+        })
 
         # Escenario 3: con sinteticos + sin genero
         X_train_ng, y_train_ng, _, _ = prepare_features_and_targets(
@@ -645,7 +664,13 @@ def run_ablation_study(
         X_test_ng_scaled = pd.DataFrame(scaler_ng.transform(X_test_ng), columns=X_test_ng.columns, index=X_test_ng.index)
         y_pred_ng_df = _fit_predict_xgboost_per_target(X_train_ng_scaled, y_train_ng, X_test_ng_scaled, target_columns)
         metrics_ng = _compute_dataset_metrics(y_test_ng, y_pred_ng_df, target_columns)
-        scenarios['xgboost_with_synthetic_without_gender'].append({'fold': fold_idx, 'num_train': int(len(train_df_full)), 'num_test': int(len(test_df)), 'metrics': metrics_ng})
+        scenarios['xgboost_with_synthetic_without_gender'].append({
+            'fold': fold_idx,
+            'num_train': int(len(train_df_full)),
+            'num_test': int(len(test_df)),
+            'test_source_composition': test_source_composition,
+            'metrics': metrics_ng,
+        })
 
         # Escenario 4: sin sinteticos + sin genero
         X_train_ns_ng, y_train_ns_ng, _, _ = prepare_features_and_targets(
@@ -659,18 +684,31 @@ def run_ablation_study(
         X_test_ns_ng_scaled = pd.DataFrame(scaler_ns_ng.transform(X_test_ng), columns=X_test_ng.columns, index=X_test_ng.index)
         y_pred_ns_ng_df = _fit_predict_xgboost_per_target(X_train_ns_ng_scaled, y_train_ns_ng, X_test_ns_ng_scaled, target_columns)
         metrics_ns_ng = _compute_dataset_metrics(y_test_ng, y_pred_ns_ng_df, target_columns)
-        scenarios['xgboost_without_synthetic_without_gender'].append({'fold': fold_idx, 'num_train': int(len(train_df_no_syn)), 'num_test': int(len(test_df)), 'metrics': metrics_ns_ng})
+        scenarios['xgboost_without_synthetic_without_gender'].append({
+            'fold': fold_idx,
+            'num_train': int(len(train_df_no_syn)),
+            'num_test': int(len(test_df)),
+            'test_source_composition': test_source_composition,
+            'metrics': metrics_ns_ng,
+        })
 
         # Baseline por reglas
         if include_rule_baseline:
             y_rule_pred = _predict_with_physical_rules(test_df, target_columns)
             rule_metrics = _compute_dataset_metrics(y_test, y_rule_pred, target_columns)
-            scenarios['rule_threshold_baseline'].append({'fold': fold_idx, 'num_train': int(len(train_df_full)), 'num_test': int(len(test_df)), 'metrics': rule_metrics})
+            scenarios['heuristic_rule_threshold_baseline'].append({
+                'fold': fold_idx,
+                'num_train': int(len(train_df_full)),
+                'num_test': int(len(test_df)),
+                'test_source_composition': test_source_composition,
+                'metrics': rule_metrics,
+            })
 
     report = {
         'timestamp': pd.Timestamp.now().isoformat(),
         'dataset_path': str(DATA_PATH),
-        'evaluation_protocol': 'GroupKFold by group_id/singer_id with identical folds across all scenarios',
+        'evaluation_protocol': 'Controlled ablation on augmented/synthetic development benchmark using identical GroupKFold partitions by group_id/singer_id across scenarios',
+        'test_set_transparency_note': 'Because ablation is run on the augmented benchmark, test folds may contain synthetic rows depending on fold composition.',
         'targets': target_columns,
         'scenarios': scenarios,
         'summary': _summarize_ablation_scenarios(scenarios),
